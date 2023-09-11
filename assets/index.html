@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoolahModLauncher - MML</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="logoContainer">
+        <h1 version="1.0">Moolah ModLauncher</h1>
+        <div class="settingsContainer">
+            <button class="settingsButton" tooltip="Settings" icon="settings" onclick="toggleSettingsPanel()"></button>
+            <button class="settingsButton" tooltip="Open game directory" icon="folder"></button>
+            <button class="settingsButton" tooltip="Information" icon="info" onclick="toggleInfo()"></button>
+            <div id="settingsPanel" class="hide">
+                <form>
+                    <label>Game Directory:</label>
+                    <input placeholder="e.g. C:\Program Files (x86)\Steam\steamapps\common\PAYDAY 3" type="text">
+                    <input type="submit" value="Save" onclick="toggleSettingsPanel()">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="playContainer">
+        <div>
+            <button id="launchGame" onclick="launchGame()">Launch Game</button>
+            <span id="gameVersion" gameversion="egs">Current version: </span>
+        </div>
+    </div>
+
+    <div id="modlistContainer">
+        <h2 totalmods="x">Mods:</h1>
+        <div id="modListWrapper">
+            <ul id="modList">
+                <!-- <li class="modItem" installed="false">
+                    <span modversion="1.0" author="LeonTheo02">Example Mod</span>
+                    <button icon="delete" class="modBtn"></button>
+                    <button icon="toggle" class="modBtn"></button>
+                </li> -->
+            
+            </ul>
+        </div>
+    </div>
+
+    <div class="popup hide">
+        <div id="popupContainer">
+            <h2 id="popupHeader">/ PLACEHOLDER HEADER /</h2>
+            <p id="popupText">
+                / PLACEHOLDER TEXT /
+            </p>
+            <button class="popupButton" data-btn="yes">Yes</button>
+            <button class="popupButton" data-btn="no">No</button>
+            <button class="popupButton" data-btn="ok">Okay</button>
+            <button class="popupButton" data-btn="close" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+</body>
+<script>
+    const mods = [
+        {
+            id: "pd2-jewelry-store",
+            version: "1.0.0-alpha+20230910231200",
+            name: "Precious Things Jewelry Store",
+            desc: "The classic Jewelry Store heist reimagined",
+            authors: ["Capcake", "Florens"]
+        },
+        {
+            id: 'void2',
+            version: '1.1',
+            name: 'VoidUI2',
+            desc: 'The classic Jewelry Store heist reimagined yet again',
+            authors: ['Xeletron']
+        },
+        {
+            id: "xelemod",
+            version: "1.1",
+            name: "Xeletron's Mod",
+            desc: "The classic Jewelry Store heist reimagined yet again",
+            authors: ["Capcake", "Florens", "soosh.exe"]
+        },
+        {
+            id: "pd2-jewelry-store2",
+            version: "1.1",
+            name: "Jewelry Store 2 - Electric Boogaloo",
+            desc: "The classic Jewelry Store heist reimagined yet again",
+            authors: ["Capcake", "Florens", "soosh.exe"]
+        },
+        {
+            id: "pd2-jewelry-store",
+            version: "1.0.0-alpha+20230910231200",
+            name: "Precious Things Jewelry Store",
+            desc: "The classic Jewelry Store heist reimagined",
+            authors: ["Capcake", "Florens"]
+        },
+        {
+            id: 'void2',
+            version: '1.1',
+            name: 'VoidUI2',
+            desc: 'The classic Jewelry Store heist reimagined yet again',
+            authors: ['Xeletron']
+        },
+        {
+            id: "xelemod",
+            version: "1.1",
+            name: "Xeletron's Mod",
+            desc: "The classic Jewelry Store heist reimagined yet again",
+            authors: ["Capcake", "Florens", "soosh.exe"]
+        },
+        {
+            id: "pd2-jewelry-store2",
+            version: "1.1",
+            name: "Jewelry Store 2 - Electric Boogaloo",
+            desc: "The classic Jewelry Store heist reimagined yet again",
+            authors: ["Capcake", "Florens", "soosh.exe"]
+        },
+        {
+            id: "pd2-jewelry-store",
+            version: "1.0.0-alpha+20230910231200",
+            name: "Precious Things Jewelry Store",
+            desc: "The classic Jewelry Store heist reimagined",
+            authors: ["Capcake", "Florens"]
+        },
+        {
+            id: 'void2',
+            version: '1.1',
+            name: 'VoidUI2',
+            desc: 'The classic Jewelry Store heist reimagined yet again',
+            authors: ['Xeletron']
+        },
+        {
+            id: "xelemod",
+            version: "1.1",
+            name: "Xeletron's Mod",
+            desc: "The classic Jewelry Store heist reimagined yet again",
+            authors: ["Capcake", "Florens", "soosh.exe"]
+        },
+        {
+            id: "pd2-jewelry-store2",
+            version: "1.1",
+            name: "Jewelry Store 2 - Electric Boogaloo",
+            desc: "The classic Jewelry Store heist reimagined yet again",
+            authors: ["Capcake", "Florens", "soosh.exe"]
+        },
+
+        // example mods, delete later
+
+    ];
+
+    const modList = document.getElementById('modList');
+
+    function createModlist(mod){
+        const modItem = document.createElement('li');
+        const modInfo = document.createElement('span');
+        const delBtn = document.createElement('button');
+        const togBtn = document.createElement('button');
+
+        let authors = mod['authors'].join(', ');
+
+        modItem;
+        modItem.classList.add('modItem');
+        modItem.setAttribute('name', mod['name']);
+        modList.appendChild(modItem);
+
+        modInfo;
+        modInfo.innerText = mod['name'];
+        modInfo.setAttribute('modversion', mod['version']);
+        modInfo.setAttribute('author', authors)
+        modItem.appendChild(modInfo)
+
+        delBtn;
+        delBtn.classList.add('modBtn');
+        delBtn.setAttribute('icon', 'delete');
+        delBtn.setAttribute('onclick', 'deleteMod(this)')
+        modItem.appendChild(delBtn);
+
+        togBtn;
+        togBtn.classList.add('modBtn');
+        togBtn.setAttribute('icon', 'toggle');
+        modItem.appendChild(togBtn);
+
+        console.log(mod.id + ' added to list as: "' + mod.name + '"')
+    };
+
+    mods.forEach(object => {
+        createModlist(object);
+    });
+
+    sortList(modList, 'li');
+
+    const settingsBtn = document.querySelector('.settingsButton[icon="settings"]');
+    const settingsPanel = document.getElementById('settingsPanel');
+
+    function toggleSettingsPanel(){
+        settingsPanel.classList.toggle('hide');
+        settingsBtn.classList.toggle('active');
+    };
+
+    function deleteMod(mod){
+        console.log(mod.parentNode);
+        modName = mod.parentNode.getAttribute('name');
+        text = "Are you sure you want to uninstall " + modName + "?";
+        openPopup('Uninstall this mod?', text, 'choice');
+        // dunno how to go on from here lol
+    };
+
+    const popup = {
+        popup: document.querySelector('.popup'),
+        header: document.getElementById('popupHeader'),
+        text: document.getElementById('popupText'),
+        btn: {
+            yes: document.querySelector('.popupButton[data-btn="yes"]'),
+            no: document.querySelector('.popupButton[data-btn="no"]'),
+            ok: document.querySelector('.popupButton[data-btn="ok"]'),
+            close: document.querySelector('.popupButton[data-btn="close"]')
+        }
+    };
+
+    function openPopup(header, text, buttons){
+        popup.header.innerText = header;
+        popup.text.innerText = text;
+        switch (buttons){
+            case 'choice':
+                popup.btn.ok.setAttribute('hidden', '');
+                popup.btn.close.setAttribute('hidden', '');
+                break;
+            case 'ok':
+                popup.btn.yes.setAttribute('hidden', '');
+                popup.btn.no.setAttribute('hidden', '');
+                popup.btn.close.setAttribute('hidden', '');
+                break;
+            case 'close':
+                popup.btn.yes.setAttribute('hidden', '');
+                popup.btn.no.setAttribute('hidden', '');
+                popup.btn.ok.setAttribute('hidden', '');
+                break;
+            case 'none':
+                popup.btn.yes.setAttribute('hidden', '');
+                popup.btn.no.setAttribute('hidden', '');
+                popup.btn.ok.setAttribute('hidden', '');
+                popup.btn.close.setAttribute('hidden', '');
+                break;
+        }
+
+        popup.popup.classList.remove('hide');
+    };
+
+    function closePopup(){
+        popup.popup.classList.add('hide');
+        popup.header.innerText = "/ PLACEHOLDER HEADER /";
+        popup.text.innerText = "/ PLACEHOLDER HEADER /";
+        popup.btn.yes.removeAttribute('hidden');
+        popup.btn.no.removeAttribute('hidden');
+        popup.btn.ok.removeAttribute('hidden');
+        popup.btn.close.removeAttribute('hidden');
+    };
+
+    function launchGame(){
+        openPopup('Launching game...', 'Your game is now launching and this window will close.', 'none')
+    };
+
+    const infotext = 'Placeholder text.\n\n"oh nyo"\n- kitteh';
+
+    function toggleInfo(){
+        openPopup('Information', infotext, 'close');
+    };
+
+    // borrowed from w3schools.com
+    function sortList(list, item) {
+        var list, i, switching, b, shouldSwitch;
+        // list = mapsContainer;
+        switching = true;
+        /* Make a loop that will continue until
+        no switching has been done: */
+        while (switching) {
+            // start by saying: no switching is done:
+            switching = false;
+            // b = list.getElementsByTagName("LI");
+            b = list.getElementsByTagName(item);
+            // Loop through all list-items:
+            for (i = 0; i < (b.length - 1); i++) {
+            // start by saying there should be no switching:
+            shouldSwitch = false;
+            /* check if the next item should
+            switch place with the current item: */
+            if (b[i].getAttribute('name').toLowerCase() > b[i + 1].getAttribute('name').toLowerCase()) {
+                /* if next item is alphabetically
+                lower than current item, mark as a switch
+                and break the loop: */
+                shouldSwitch = true;
+                break;
+            }
+            }
+            if (shouldSwitch) {
+            /* If a switch has been marked, make the switch
+            and mark the switch as done: */
+            b[i].parentNode.insertBefore(b[i + 1], b[i]);
+            switching = true;
+            }
+        }
+    }
+</script>
+</html>

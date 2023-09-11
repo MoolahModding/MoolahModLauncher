@@ -1,0 +1,411 @@
+:root{
+    --colorPD3: hsl(148, 21%, 51%);
+    --colorBG: hsl(0, 0%, 0%, 0.25);
+    --colorOutline: hsla(0, 0%, 90%);
+    --colorDisabled: hsla(0, 0%, 100%, 0.3);
+    --colorHover: hsla(0, 0%, 100%, 0.1);
+    --transition: .15s;
+    --tickboxSize: .6rem;
+    --fontSize: 1rem;
+    --r: hsla(0, 100%, 50%, 0.5);
+    --g: hsla(120, 100%, 25%, 0.5);
+    --settingsButtonSize: 40px;
+    --tooltipDelay: .5s;
+}
+body{
+    background-color: #191919;
+    height: calc(100vh - 5rem);
+    color: white;
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    grid-template-columns: 3fr 4fr;
+    grid-template-areas: 
+    "logo mods"
+    "play mods";
+    padding: 2rem;
+    font-family: Arial, Helvetica, sans-serif;
+    user-select: none;
+    gap: 2rem;
+    scrollbar-color: var(--colorHover) var(--colorHover);
+}
+body::-webkit-scrollbar-thumb{
+    background-color: var(--colorHover);
+}
+body::-webkit-scrollbar{
+    background-color: var(--colorHover);
+}
+
+div#logoContainer{
+    grid-area: logo;
+}
+div#logoContainer > h1{
+    margin: 0;
+    border-bottom: solid;
+    border-color: var(--colorPD3);
+}
+div#logoContainer > h1::after{
+    content: 'v'attr(version);
+    font-size: 1rem;
+    padding-left: .8rem;
+}
+div#playContainer{
+    grid-area: play;
+    display: grid;
+    place-items: center;
+}
+#launchGame{
+    position: relative;
+    box-sizing: border-box; 
+    display: inline-block;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    padding: 1.5rem;
+    background-color: var(--colorBG);
+    cursor: pointer;
+    user-select: none;
+}
+#launchGame::before{
+    content: '';
+    position: absolute;
+    display: block;
+    inset: 0;
+    background-color: var(--colorPD3);
+    z-index: -1;
+    scale: 0 1;
+    transition: scale var(--transition);
+    transition-timing-function: linear;
+    transform-origin: center;
+}
+#launchGame:hover::before{
+    scale: 1 1;
+}
+#launchGame[disabled]{
+    color: var(--colorDisabled);
+    cursor: not-allowed;
+}
+#launchGame[disabled]:hover::before{
+    scale: 0 1;
+}
+#launchGame[disabled]:hover::after{
+    content: 'Game launch currently not possible.';
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    color: white;
+    font-size: var(--fontSize);
+    background-color: black;
+    padding: 1rem;
+    z-index: 1;
+    width: max-content;
+    translate: -50%;
+    text-transform: unset;
+}
+#gameVersion{
+    display: block;
+    margin: .4rem;
+    opacity: .8;
+    font-size: .9rem;
+    user-select: none;
+}
+#gameVersion::after{
+    content: attr(gameversion);
+    text-transform: capitalize;
+}
+#gameVersion[gameversion="egs"]::after{
+    content: attr(gameversion);
+    text-transform: uppercase;
+}
+
+div#modlistContainer{
+    grid-area: mods;
+    background-color: var(--colorBG);
+    box-shadow: 0 0 1rem var(--colorBG) inset;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+#modlistContainer > h2{
+    border-bottom: solid;
+    margin-bottom: .1rem;
+    margin-inline: 1rem;
+    border-color: var(--colorPD3);
+}
+#modListWrapper{
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    padding-top: 1rem;
+}
+#modListWrapper::-webkit-scrollbar-thumb{
+    background-color: var(--colorHover);
+}
+#modListWrapper::-webkit-scrollbar{
+    background-color: var(--colorHover);
+}
+#modList{
+    list-style: none;
+    padding-left: 2rem;
+    padding-right: 1rem;
+    padding-top: 1rem;
+    margin: 0;
+}
+.modItem{
+    display: grid;
+    padding: .2rem;
+    margin-bottom: .8rem;
+    outline: solid;
+    outline-color: var(--colorOutline);
+    outline-width: 2px;
+    border-left: solid;
+    border-width: var(--tickboxSize);
+    border-color: transparent;
+    font-size: var(--fontSize);
+    grid-template-columns: 1fr auto auto;
+    gap: .5rem;
+    user-select: all;
+}
+.modItem:hover{
+    background-color: var(--colorHover);
+}
+.modItem[installed="true"]{
+    border-color: var(--colorOutline);
+}
+.modItem > span{
+    display: inline-block;
+    height: 100%;
+}
+.modItem > span[author]::after{
+    content: ' by: 'attr(author);
+    color: hsl(0, 0%, 80%);
+    display: block;
+}
+.modItem > span[author=""]::after{
+    content: ''
+}
+.modItem > span[modversion]::before{
+    content: 'v'attr(modversion)' ';
+    color: hsla(0, 0%, 80%, 0.8);
+}
+.modItem > span[modversion=""]::before{
+    content: '';
+}
+.modBtn{
+    border: none;
+    background: none;
+    display: inline-block;
+    height: calc(var(--fontSize) * 1.5);
+    aspect-ratio: 1;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-left: auto;
+    margin-right: 0;
+    cursor: pointer;
+    position: relative;
+}
+.modBtn[icon="delete"]{
+    background-image: url('img/trash.svg');
+}
+.modBtn[icon="toggle"]{
+    background-image: url('img/tickbox_empty.svg');
+}
+.modBtn::after{
+    content: '';
+    position: absolute;
+    color: white;
+    background-color: black;
+    width: max-content;
+    right: 0;
+    bottom: 100%;
+    font-size: var(--fontSize);
+    padding: .5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: .2s;
+}
+.modBtn[icon="delete"]::after{
+    content: 'Uninstall this mod'
+}
+.modBtn[icon="toggle"]::after{
+    content: 'Enable/disable this mod'
+}
+.modBtn:hover::after{
+    opacity: 1;
+    transition-delay: var(--tooltipDelay);
+}
+.modBtn[ticked]{
+    background-image: url('img/tickbox_ticked.svg');
+}
+.modBtn:hover{
+    background-color: var(--colorBG);
+}
+
+.popup{
+    background-color: var(--colorBG);
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    backdrop-filter: blur(5px);
+}
+#popupContainer{
+    min-width: 50%;
+    max-width: 50%;
+    background-color: black;
+    padding: 2rem;
+    font-size: var(--fontSize);
+    position: relative;
+}
+#popupHeader{
+    margin: 0;
+    border-bottom: solid;
+    border-color: var(--colorPD3);
+    font-size: calc(var(--fontSize) * 1.5);
+}
+#popupHeader::before{
+    content: '';
+    display: inline-block;
+    height: calc(var(--fontSize) * 1.5);
+    margin-right: .3rem;
+    translate: 0 3px;
+    aspect-ratio: 1;
+    background-image: url(img/attention.svg);
+    background-size: contain;
+    background-position: center;
+}
+.popupButton{
+    display: inline-block;
+    margin-block: .5rem;
+    font-size: calc(var(--fontSize) * 1.3);
+    box-sizing: content-box;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    outline: solid;
+    outline-width: 2px;
+    outline-color: var(--colorOutline);
+    margin-right: 1rem;
+    border-left: solid;
+    border-width: .5rem;
+    border-color: transparent;
+    padding-right: 1rem;
+}
+.popupButton:hover{
+    border-color: var(--colorOutline);
+}
+.popupButton[data-btn="yes"]{
+    background-color: var(--g);
+}
+.popupButton[data-btn="no"]{
+    background-color: var(--r);
+}
+
+.settingsContainer{
+    background-color: var(--colorBG);
+    padding: .5rem;
+}
+.settingsButton{
+    border: none;
+    background: none;
+    height: var(--settingsButtonSize);
+    aspect-ratio: 1;
+    background-size: contain;
+    background-position: color;
+    margin-right: .2rem;
+    position: relative;
+}
+.settingsButton[icon="settings"]{
+    background-image: url('img/settings.svg');
+}
+.settingsButton[icon="folder"]{
+    background-image: url('img/folder.svg');
+}
+.settingsButton[icon="info"]{
+    background-image: url('img/info.svg');
+}
+.settingsButton:hover{
+    background-color: var(--colorHover);
+    cursor: pointer;
+}
+.settingsButton::after{
+    content: attr(tooltip);
+    position: absolute;
+    color: white;
+    background-color: black;
+    width: max-content;
+    left: 0;
+    bottom: 100%;
+    font-size: var(--fontSize);
+    padding: .5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: .2s;
+}
+.settingsButton:hover::after{
+    opacity: 1;
+    transition-delay: var(--tooltipDelay);
+}
+#settingsPanel{
+    padding-top: .5rem;
+    overflow: hidden;
+    transition: height 1s;
+}
+input{
+    color: inherit;
+    display: block;
+    font-size: var(--fontSize);
+    border: none;
+    background-color: var(--colorBG);
+}
+input[type="text"]{
+    padding: .5rem;
+    width: calc(100% - 1rem);
+    border-left: solid;
+    border-color: transparent;
+}
+input[type="text"]:focus{
+    outline: none;
+    border-color: var(--colorOutline);
+}
+input[type="submit"]{
+    padding: .5rem;
+    cursor: pointer;
+    text-align: right;
+    margin-top: 1rem;
+    margin-inline: auto 0;
+}
+input[type="submit"]:hover{
+    background-image: var(--colorHover);
+}
+
+@media (orientation: portrait){
+    body{
+        grid-template-rows: auto auto 1fr;
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+        "logo"
+        "play"
+        "mods";
+        gap: 2rem;
+    }
+    #popupContainer{
+        max-width: 100%;
+    }
+}
+
+.hide{
+    display: none;
+    height: 0;
+}
+[hidden]{
+    display: none;
+}
+.show{
+    height: auto;
+}
+.active{
+    background-color: var(--colorHover);
+}

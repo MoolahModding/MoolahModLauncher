@@ -1,0 +1,22 @@
+{
+  "name": "moolahmodlauncher",
+  "version": "1.0.0",
+  "description": "A simple mod launcher",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MoolahModding/MoolahModLauncher.git"
+  },
+  "author": "MoolahModding",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/MoolahModding/MoolahModLauncher/issues"
+  },
+  "homepage": "https://github.com/MoolahModding/MoolahModLauncher#readme",
+  "devDependencies": {
+    "electron": "^26.2.0"
+  }
+}
