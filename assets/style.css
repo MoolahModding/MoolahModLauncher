@@ -352,6 +352,7 @@ div#modlistContainer{
     padding-top: .5rem;
     overflow: hidden;
     transition: height 1s;
+    padding-left: .5rem;
 }
 input{
     color: inherit;
@@ -362,13 +363,17 @@ input{
 }
 input[type="text"]{
     padding: .5rem;
-    width: calc(100% - 1rem);
+    width: calc(100% - 1.5rem);
     border-left: solid;
     border-color: transparent;
+    outline: solid;
+    outline-width: 1px;
+    outline-color: hsl(0, 0%, 100%, .5);
+    margin-bottom: .3rem;
 }
 input[type="text"]:focus{
-    outline: none;
     border-color: var(--colorOutline);
+    outline-color: var(--colorOutline);
 }
 input[type="submit"]{
     padding: .5rem;
@@ -379,6 +384,28 @@ input[type="submit"]{
 }
 input[type="submit"]:hover{
     background-image: var(--colorHover);
+}
+input[type="checkbox"]{
+    display: inline-block;
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    color: var(--colorOutline);
+}
+input[type="checkbox"]::before{
+    content: '';
+    display: inline-block;
+    height: var(--fontSize);
+    aspect-ratio: 1;
+    outline: solid;
+    outline-width: 2px;
+    margin-right: .3rem;
+}
+input[type="checkbox"]:checked::before{
+    background-color: var(--colorOutline);
+}
+hr{
+    opacity: .2;
 }
 
 @media (orientation: portrait){

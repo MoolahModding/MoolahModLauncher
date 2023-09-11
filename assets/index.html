@@ -15,8 +15,14 @@
             <button class="settingsButton" tooltip="Information" icon="info" onclick="toggleInfo()"></button>
             <div id="settingsPanel" class="hide">
                 <form>
-                    <label>Game Directory:</label>
-                    <input placeholder="e.g. C:\Program Files (x86)\Steam\steamapps\common\PAYDAY 3" type="text">
+                    <label for="setGameDir">Game Directory:</label>
+                    <input placeholder="e.g. C:\Program Files (x86)\Steam\steamapps\common\PAYDAY 3" type="text" id="setGameDir">
+                    <hr>
+
+                    <input type="checkbox" id="setKeepOpen">
+                    <label for="setKeepOpen">Keep ModLauncher open when launching the game</label>
+                    <hr>
+					
                     <input type="submit" value="Save" onclick="toggleSettingsPanel()">
                 </form>
             </div>
