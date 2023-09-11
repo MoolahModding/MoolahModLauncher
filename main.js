@@ -3,9 +3,6 @@ const { app, BrowserWindow } = require('electron');
 let mainWindow;
 
 app.on('ready', () => {
-	mainWindow = new BrowserWindow({ width: 800, height: 600 });
-	mainWindow.loadFile('assets/index.html');
-
 	// Check the platform to determine if we're on Windows
 	if (process.platform === 'win32') {
 		const setup = require('./setup_win32');
@@ -18,11 +15,15 @@ app.on('ready', () => {
 			setup.installShellExtension(app.getAppPath());
 		} else if (isUninstall) {
 			setup.uninstallShellExtension();
+			// After an uninstall we just quit
+			app.quit();
 		}
 	}
   
 	// Check if our command line arguments include a path and install mod here
   
+	mainWindow = new BrowserWindow({ width: 800, height: 600 });
+	mainWindow.loadFile('assets/index.html');
 });
 
 app.on('window-all-closed', () => {

@@ -12,9 +12,23 @@ function installShellExtension(appPath) {
 
 	key.create(() => {
 		key.set('', regedit.REG_SZ, 'MoolahModLauncher.' + fileExtension, () => {
-			key.set('DefaultIcon', regedit.REG_SZ, `"${exePath}",0`, () => {
-				key.set('shell\\open\\command', regedit.REG_SZ, `"${exePath}" "%1"`, () => {
-				console.log(`File extension for ${fileExtension} installed.`);
+			
+			const key_icon = new regedit({
+				hive: regedit.HKCU,
+				key: '\\Software\\Classes\\' + fileExtension + '\\DefaultIcon'
+			});
+			
+			key_icon.create(() => {
+				key_icon.set('', regedit.REG_SZ, `"${exePath}",0`, () => {
+					
+					const key_shell = new regedit({
+						hive: regedit.HKCU,
+						key: '\\Software\\Classes\\' + fileExtension + '\\shell\\open\\command'
+					});
+					
+					key_shell.set('', regedit.REG_SZ, `"${exePath}" "%1"`, () => {
+						console.log(`File extension for ${fileExtension} installed.`);
+					});	
 				});
 			});
 		});
