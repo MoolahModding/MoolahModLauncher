@@ -18,5 +18,8 @@
   "homepage": "https://github.com/MoolahModding/MoolahModLauncher#readme",
   "devDependencies": {
     "electron": "^26.2.0"
+  },
+  "dependencies": {
+    "winreg": "^1.2.4"
   }
 }
