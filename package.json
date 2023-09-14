@@ -20,6 +20,7 @@
     "electron": "^26.2.0"
   },
   "dependencies": {
+    "adm-zip": "^0.5.10",
     "winreg": "^1.2.4"
   }
 }
