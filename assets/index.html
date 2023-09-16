@@ -14,7 +14,7 @@
             <button class="settingsButton" tooltip="Open game directory" icon="folder"></button>
             <button class="settingsButton" tooltip="Information" icon="info" onclick="toggleInfo()"></button>
             <div id="settingsPanel" class="hide">
-                <form>
+                <form onsubmit="return false">
                     <label for="setGameDir">Game Directory:</label>
                     <input placeholder="e.g. C:\Program Files (x86)\Steam\steamapps\common\PAYDAY 3" type="text" id="setGameDir">
                     <hr>
@@ -23,7 +23,7 @@
                     <label for="setKeepOpen">Keep ModLoader open when launching the game</label>
                     <hr>
 					
-                    <input type="submit" value="Save" onclick="toggleSettingsPanel()">
+                    <input type="submit" value="Save" onclick="saveSettings()">
                 </form>
             </div>
         </div>
@@ -153,6 +153,10 @@
         // example mods, delete later
 
     ];
+    
+    window.onload = (e) => {
+        loadSettings();
+    }
 
     const modList = document.getElementById('modList');
 
@@ -202,6 +206,21 @@
         settingsPanel.classList.toggle('hide');
         settingsBtn.classList.toggle('active');
     };
+
+    function loadSettings() {
+        window.config.loadConfig();
+        document.getElementById("setGameDir").value = window.config.getConfigValue("gameDirectory");
+        document.getElementById("setKeepOpen").checked = window.config.getConfigValue("keepLauncherOpen");
+    }
+
+    function saveSettings() {
+        // Should always load the config before reading from it and save after writing, because
+        // nodejs and normal javascript have different instances of the config
+        window.config.loadConfig();
+        window.config.setConfigValue("gameDirectory", "test");//document.getElementById("setGameDir").value);
+        window.config.setConfigValue("keepLauncherOpen", document.getElementById("setKeepOpen").checked);
+        window.config.saveConfig();
+    }
 
     function deleteMod(mod){
         console.log(mod.parentNode);
