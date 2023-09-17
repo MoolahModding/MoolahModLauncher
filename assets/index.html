@@ -8,7 +8,7 @@
 </head>
 <body>
     <div id="logoContainer">
-        <h1>Moolah ModLauncher<span id="version">v</span></h1>
+        <h1>Moolah Mod Launcher<span id="version">v</span></h1>
         <div class="settingsContainer">
             <button class="settingsButton" tooltip="Settings" icon="settings" onclick="toggleSettingsPanel()"></button>
             <button class="settingsButton" tooltip="Open game directory" icon="folder"></button>
@@ -21,10 +21,10 @@
                     <hr>
 
                     <input type="checkbox" id="setKeepOpen">
-                    <label for="setKeepOpen">Keep ModLauncher open when launching the game</label>
+                    <label for="setKeepOpen">Keep Mod Launcher open when launching the game</label>
                     <hr>
 					
-                    <input type="submit" value="Save" onclick="saveSettings()">
+                    <input type="submit" value="Save" onclick="saveConfig()">
                 </form>
             </div>
         </div>
@@ -428,7 +428,7 @@
     };
 
     function launchGame(){
-        if(settings.gameLaunchPossible == true){
+        if(launcherConfig.gameLaunchPossible == true){
             // CALL FUNCTION TO LAUNCH GAME
             openPopup('Launching game...', 'Your game is now launching and this window will close.', 'none')
         }
