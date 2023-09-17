@@ -2,7 +2,8 @@ const { app, BrowserWindow } = require('electron');
 const path = require("node:path");
 
 const modParser = require('./mod_parser');
-const {loadConfig, saveConfig} = require('./config');
+const { loadConfig, saveConfig, setConfigValue } = require('./config');
+const {locateEpicInstall} = require('./installlocators');
 
 let mainWindow;
 
@@ -17,14 +18,21 @@ app.on('ready', () => {
     
 		if (isInstall) {
 			setup.installShellExtension(app.getAppPath());
+
+			var epic = locateEpicInstall();
+
+			loadConfig();
+			if (epic != "NOTFOUND") {
+				setConfigValue("gameDirectory", epic);
+			}
+			// check for steam
+			saveConfig();
 		} else if (isUninstall) {
 			setup.uninstallShellExtension();
 			// After an uninstall we just quit
 			app.quit();
 		}
 	}
-
-	loadConfig();
   
 	// Check if our command line arguments include a path and install mod here
 	// TESTING
