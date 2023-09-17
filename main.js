@@ -3,7 +3,7 @@ const path = require("node:path");
 
 const modParser = require('./mod_parser');
 const { loadConfig, saveConfig, setConfigValue } = require('./config');
-const {locateEpicInstall} = require('./installlocators');
+const { locateSteamInstall, locateEpicInstall } = require('./installlocators');
 
 let mainWindow;
 
@@ -22,10 +22,19 @@ app.on('ready', () => {
 			var epic = locateEpicInstall();
 
 			loadConfig();
-			if (epic != "NOTFOUND") {
+			if (epic != "NOTFOUND")
 				setConfigValue("gameDirectory", epic);
-			}
-			// check for steam
+
+			locateSteamInstall()
+			.then(result => {
+				console.log("Steam:", result);
+				setConfigValue("gameDirectory", result);
+				saveConfig();
+			})
+			.catch(error => {
+				console.error("Error:", error);
+			});
+
 			saveConfig();
 		} else if (isUninstall) {
 			setup.uninstallShellExtension();
