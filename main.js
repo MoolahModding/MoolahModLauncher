@@ -1,5 +1,8 @@
 const { app, BrowserWindow } = require('electron');
+const path = require("node:path");
+
 const modParser = require('./mod_parser');
+const {loadConfig, saveConfig} = require('./config');
 
 let mainWindow;
 
@@ -20,6 +23,8 @@ app.on('ready', () => {
 			app.quit();
 		}
 	}
+
+	loadConfig();
   
 	// Check if our command line arguments include a path and install mod here
 	// TESTING
@@ -29,7 +34,13 @@ app.on('ready', () => {
 	}
 	// TESTING
   
-	mainWindow = new BrowserWindow({ width: 800, height: 600 });
+	mainWindow = new BrowserWindow({
+		width: 800, height: 600,
+		webPreferences: {
+			preload: path.join(__dirname, 'preload.js'),
+			nodeIntegration: true
+		}
+	 });
 	mainWindow.loadFile('assets/index.html');
 });
 

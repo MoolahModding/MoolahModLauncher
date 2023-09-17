@@ -15,7 +15,7 @@
             <button class="settingsButton" tooltip="Information" icon="info" onclick="toggleInfo()"></button>
             <button class="settingsButton" tooltip="Check for Updates" icon="updates" onclick="checkUpdates()"></button>
             <div id="settingsPanel" class="hide">
-                <form>
+                <form onsubmit="return false">
                     <label for="setGameDir">Game Directory:</label>
                     <input placeholder="e.g. C:\Program Files (x86)\Steam\steamapps\common\PAYDAY 3" type="text" id="setGameDir">
                     <hr>
@@ -99,6 +99,10 @@
 
     let mods = [];
     let currentSelectedMod;
+    
+    window.onload = (e) => {
+        loadSettings();
+    }
 
     const modList = document.getElementById('modList');
     const launcherVersion = document.getElementById('version');
@@ -170,7 +174,7 @@
 
     updateSettings();
 
-    function saveSettings(){
+    function saveConfig(){
         let newGameDirectory = settings.gamedir.value;
         let newKeepOpen = settings.keepOpen.checked
         // CALL FUNCTION TO UPDATE USER CONFIG
@@ -178,6 +182,22 @@
         console.log(newKeepOpen);
         console.log(newGameDirectory);
         toggleSettingsPanel();
+        updateSettings();
+    }
+
+    function loadSettings() {
+        window.config.loadConfig();
+        document.getElementById("setGameDir").value = window.config.getConfigValue("gameDirectory");
+        document.getElementById("setKeepOpen").checked = window.config.getConfigValue("keepLauncherOpen");
+    }
+
+    function saveSettings() {
+        // Should always load the config before reading from it and save after writing, because
+        // nodejs and normal javascript have different instances of the config
+        window.config.loadConfig();
+        window.config.setConfigValue("gameDirectory", "test");//document.getElementById("setGameDir").value);
+        window.config.setConfigValue("keepLauncherOpen", document.getElementById("setKeepOpen").checked);
+        window.config.saveConfig();
     }
 
     
