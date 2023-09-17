@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" version="1.1" viewBox="0 0 12.7 12.7" xmlns="http://www.w3.org/2000/svg">
+<!-- <path d="m1.0583 1.0583v10.583h10.583v-10.583z" fill="none" stroke="#fff" stroke-dasharray="1.05833, 1.05833" stroke-dashoffset=".52916" stroke-width="1.0583"/> -->
+<path d="m11.112 1.5875-9.525 9.525" fill="none" stroke="#fff" stroke-linecap="square" stroke-width="1.0583"/>
+<path d="m7.1438 1.5875-5.5562 5.5562" fill="none" stroke="#fff" stroke-linecap="square" stroke-width="1.0583"/>
+<path d="m11.112 5.5562-5.5562 5.5562" fill="none" stroke="#fff" stroke-linecap="square" stroke-width="1.0583"/>
+<path d="m11.112 9.525-1.5875 1.5875" fill="none" stroke="#fff" stroke-linecap="square" stroke-width="1.0583"/>
+<path d="m3.175 1.5875-1.5875 1.5875" fill="none" stroke="#fff" stroke-linecap="square" stroke-width="1.0583"/>
+</svg>

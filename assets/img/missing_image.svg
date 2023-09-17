@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" version="1.1" viewBox="0 0 12.7 12.7" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<mask id="a" maskUnits="userSpaceOnUse">
+<path d="m-0.65947 0.13428h14.019v11.298h-14.019z" fill="#fff"/>
+<rect transform="matrix(-.86569 .50059 -.49941 -.86636 0 0)" x="-3.3971" y="-15.773" width=".90608" height="14.509" ry="6.0422e-8" stroke="#000" stroke-miterlimit="4.1" stroke-width="1.3229"/>
+</mask>
+</defs>
+<g transform="matrix(.87637 0 0 .875 .78503 1.182)" mask="url(#a)" stroke-width="1.142">
+<path x="0.79374999" y="1.5875" width="11.1125" height="8.3910713" ry="5.2508856e-08" d="m0.79375 1.5875h11.112v0 8.3911 1e-7h-11.112c-3e-8 0-5e-8 0-5e-8 -1e-7v-8.3911h5e-8z" fill="none" stroke="#fff" stroke-linecap="square" stroke-miterlimit="4.1" stroke-width=".90643"/>
+<path d="m1.5715 8.4211 4.1227-4.0723 1.3742 1.3574 0.68712-0.67871 3.4356 3.3936v0.67871h-9.6197z" fill="#fff" stroke="#fff" stroke-width=".90643"/>
+<path d="m9.808 2.7781a0.90622 0.90622 0 0 1 0.90764 0.90466 0.90622 0.90622 0 0 1-0.90453 0.90777 0.90622 0.90622 0 0 1-0.9079-0.9044 0.90622 0.90622 0 0 1 0.90427-0.90803" fill="#fff"/>
+</g>
+<g transform="rotate(190 6.7469 6.35)">
+<rect transform="rotate(-40)" x=".68983" y="3.6449" width=".79375" height="11.112" ry="4.6279e-8" fill="#fff" stroke-miterlimit="4.1" stroke-width="0"/>
+</g>
+</svg>

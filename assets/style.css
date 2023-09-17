@@ -7,26 +7,40 @@
     --transition: .15s;
     --tickboxSize: .6rem;
     --fontSize: 1rem;
+    --headerSize: 1.5rem;
     --r: hsla(0, 100%, 50%, 0.5);
     --g: hsla(120, 100%, 25%, 0.5);
-    --settingsButtonSize: 40px;
+    --settingsButtonSize: 32px;
     --tooltipDelay: .5s;
+    --modIconSize: 128px;
+}
+*::-webkit-scrollbar-thumb{
+    background-color: var(--colorHover);
+}
+*::-webkit-scrollbar{
+    background-color: var(--colorHover);
+}
+*::-webkit-scrollbar-corner{
+    background-color: #313131;
 }
 body{
     background-color: #191919;
     height: calc(100vh - 5rem);
     color: white;
     display: grid;
-    grid-template-rows: 2fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     grid-template-columns: 3fr 4fr;
     grid-template-areas: 
     "logo mods"
+    "details mods"
     "play mods";
     padding: 2rem;
     font-family: Arial, Helvetica, sans-serif;
     user-select: none;
     gap: 2rem;
     scrollbar-color: var(--colorHover) var(--colorHover);
+    overflow: scroll;
+    scrollbar-gutter: stable;
 }
 body::-webkit-scrollbar-thumb{
     background-color: var(--colorHover);
@@ -43,10 +57,20 @@ div#logoContainer > h1{
     border-bottom: solid;
     border-color: var(--colorPD3);
 }
-div#logoContainer > h1::after{
-    content: 'v'attr(version);
+h1 > span{
+    /* content: 'v'attr(version); */
     font-size: 1rem;
     padding-left: .8rem;
+}
+div#logoContainer > h1::before{
+    content: '';
+    display: inline-block;
+    height: calc(var(--fontSize) * 2);
+    aspect-ratio: 1;
+    background-image: url('img/modloader.svg');
+    background-size: contain;
+    translate: 0 calc(var(--fontSize) / 3.5);
+    margin-right: .3rem;
 }
 div#playContainer{
     grid-area: play;
@@ -66,6 +90,7 @@ div#playContainer{
     background-color: var(--colorBG);
     cursor: pointer;
     user-select: none;
+    box-shadow: 0 0 1rem var(--colorBG);
 }
 #launchGame::before{
     content: '';
@@ -122,27 +147,22 @@ div#playContainer{
 div#modlistContainer{
     grid-area: mods;
     background-color: var(--colorBG);
-    box-shadow: 0 0 1rem var(--colorBG) inset;
+    box-shadow: 0 0 1rem var(--colorBG) inset, 0 0 2px var(--colorHover);
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr;
 }
-#modlistContainer > h2{
+h2{
     border-bottom: solid;
     margin-bottom: .1rem;
     margin-inline: 1rem;
     border-color: var(--colorPD3);
+    font-size: var(--headerSize);
 }
 #modListWrapper{
     overflow-y: auto;
     scrollbar-gutter: stable;
     padding-top: 1rem;
-}
-#modListWrapper::-webkit-scrollbar-thumb{
-    background-color: var(--colorHover);
-}
-#modListWrapper::-webkit-scrollbar{
-    background-color: var(--colorHover);
 }
 #modList{
     list-style: none;
@@ -175,6 +195,8 @@ div#modlistContainer{
 .modItem > span{
     display: inline-block;
     height: 100%;
+    user-select: none;
+    cursor: pointer;
 }
 .modItem > span[author]::after{
     content: ' by: 'attr(author);
@@ -314,8 +336,10 @@ div#modlistContainer{
     aspect-ratio: 1;
     background-size: contain;
     background-position: color;
-    margin-right: .2rem;
+    margin-right: .5rem;
     position: relative;
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    transition: filter .2s;
 }
 .settingsButton[icon="settings"]{
     background-image: url('img/settings.svg');
@@ -325,6 +349,9 @@ div#modlistContainer{
 }
 .settingsButton[icon="info"]{
     background-image: url('img/info.svg');
+}
+.settingsButton[icon="updates"]{
+    background-image: url('img/update.svg');
 }
 .settingsButton:hover{
     background-color: var(--colorHover);
@@ -407,6 +434,161 @@ input[type="checkbox"]:checked::before{
 hr{
     opacity: .2;
 }
+#detailsContainer{
+    background-color: var(--colorBG);
+    grid-area: details;
+    display: grid;
+    grid-template-columns: var(--modIconSize) 1fr;
+    grid-template-rows: var(--modIconSize) calc(var(--headerSize) * 2) 1fr;
+    box-shadow: 0 0 1rem var(--colorBG) inset, 0 0 2px var(--colorHover);
+    grid-template-areas: 
+    "icon header"
+    "buttons buttons"
+    "desc desc";
+}
+#detailsModIcon{
+    grid-area: icon;
+    width: 80%;
+    place-self: center;
+    user-select: none;
+    pointer-events: none;
+}
+#detailsModIcon[src="img/missing_image.svg"]{
+    opacity: .25;
+    outline: dashed;
+}
+.detailsHeader{
+    grid-area: header;
+    padding-inline: 1rem;
+    display: grid;
+    grid-template-rows: 50% auto 1fr;
+    overflow-x: hidden;
+}
+.detailsHeader > span{
+    font-size: var(--fontSize);
+    display: block;
+    color: grey;
+}
+#detailsModVersion[modversion]::before{
+    content: 'v'attr(modversion);
+}
+#detailsModVersion[modversion=""]::before{
+    content: '';
+}
+#detailsModAuthor::before{
+    content: 'By: ';
+}
+
+h3{
+    margin-bottom: .1rem;
+    margin-top: .5rem;
+    font-size: var(--headerSize);
+    overflow-y: hidden;
+}
+#detailsButtons{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding-left: 1rem;
+    grid-area: buttons;
+    place-items: center;
+}
+.detailsLink{
+    display: inline-block;
+    font-size: var(--headerSize);
+    color: white;
+    padding: .4rem;
+    padding-left: 1rem;
+    text-decoration: none;
+    /* background-color: #191919; */
+    position: relative;
+    box-shadow: 0 0 1rem var(--colorBG);
+    outline: solid;
+    outline-width: 2px;
+    outline-color: var(--colorOutline);
+    border-left: solid;
+    padding-right: calc(var(--tickboxSize) + 1rem);
+    border-width: var(--tickboxSize);
+    border-color: transparent;
+    /* margin-right: 1rem; */
+}
+.detailsLink:hover{
+    border-color: var(--colorOutline);
+}
+/* .detailsLink::before{
+    content: '';
+    position: absolute;
+    display: block;
+    inset: 0;
+    background-color: var(--colorPD3);
+    z-index: -1;
+    scale: 0 1;
+    transition: scale var(--transition);
+    transition-timing-function: linear;
+    transform-origin: center;
+}
+.detailsLink:hover::before{
+    scale: 1 1;
+} */
+.detailsLink[disabled]{
+    color: var(--colorDisabled);
+    outline-color: var(--colorDisabled);
+    cursor: not-allowed;
+}
+.detailsLink[disabled]:hover{
+    border-color: transparent;
+}
+#detailsDescWrapper{
+    /* background-color: red; */
+    border-top: solid;
+    border-width: 2px;
+    border-color: var(--colorDisabled);
+    margin-top: .5rem;
+    scrollbar-gutter: stable;
+    grid-area: desc;
+    max-height: 10rem;
+    overflow-y: scroll;
+    padding: 1rem;
+}
+#detailsDesc{
+    margin: 0
+}
+/* .detailsLink[disabled]:hover::before{
+    scale: 0 1;
+} */
+/* #detailsModName::-webkit-scrollbar-track,
+#detailsModName::-webkit-scrollbar-thumb{
+    background-color: #19191900;
+    background-color: #ff0000;
+} */
+/* #detailsWrapper{
+    overflow-y: scroll;
+}
+#detailsWrapper::-webkit-scrollbar-thumb{
+    background-color: var(--colorHover);
+}
+#detailsWrapper::-webkit-scrollbar{
+    background-color: var(--colorHover);
+} */
+/* #detailsTable{
+    border-collapse: collapse;
+    margin: 1rem
+} */
+/* tr{
+    border-bottom: dotted;
+    border-width: 1px;
+} */
+/* tr:nth-child(even){
+    background-color: hsla(0, 0%, 100%, 0.075);
+} */
+/* tr:nth-child(odd){
+    background-color: var(--colorBG);
+} */
+/* td{
+    padding: .5rem;
+}
+tr td:first-child{
+    padding-right: 1rem;
+} */
 
 @media (orientation: portrait){
     body{
@@ -415,19 +597,25 @@ hr{
         grid-template-areas: 
         "logo"
         "play"
+        "details"
         "mods";
         gap: 2rem;
+        height: auto;
     }
     #popupContainer{
         max-width: 100%;
     }
 }
 
-.hide{
+.hide,
+.hide::before,
+.hide::after{
     display: none;
     height: 0;
 }
-[hidden]{
+[hidden],
+[hidden]::before,
+[hidden]::after{
     display: none;
 }
 .show{

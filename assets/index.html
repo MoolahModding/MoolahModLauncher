@@ -8,11 +8,12 @@
 </head>
 <body>
     <div id="logoContainer">
-        <h1 version="1.0">Moolah ModLauncher</h1>
+        <h1>Moolah ModLauncher<span id="version">v</span></h1>
         <div class="settingsContainer">
             <button class="settingsButton" tooltip="Settings" icon="settings" onclick="toggleSettingsPanel()"></button>
             <button class="settingsButton" tooltip="Open game directory" icon="folder"></button>
             <button class="settingsButton" tooltip="Information" icon="info" onclick="toggleInfo()"></button>
+            <button class="settingsButton" tooltip="Check for Updates" icon="updates" onclick="checkUpdates()"></button>
             <div id="settingsPanel" class="hide">
                 <form>
                     <label for="setGameDir">Game Directory:</label>
@@ -20,13 +21,37 @@
                     <hr>
 
                     <input type="checkbox" id="setKeepOpen">
-                    <label for="setKeepOpen">Keep ModLoader open when launching the game</label>
+                    <label for="setKeepOpen">Keep ModLauncher open when launching the game</label>
                     <hr>
 					
-                    <input type="submit" value="Save" onclick="toggleSettingsPanel()">
+                    <input type="submit" value="Save" onclick="saveSettings()">
                 </form>
             </div>
         </div>
+    </div>
+
+    <div id="detailsContainer">
+        <a id="details"></a>
+        <img src="img/missing_image.svg" alt="" id="detailsModIcon">
+        <div class="detailsHeader">
+            <h3 id="detailsModName">No mod selected...</h3>
+            <span id="detailsModVersion" modversion=""></span>
+            <span id="detailsModAuthor" class="hide"></span>
+        </div>
+        <div id="detailsButtons">
+            <a href="" id="detailsModWebsite" class="detailsLink" disabled>Website</a>
+            <a href="" id="detailsModIssues" class="detailsLink" disabled>Issues</a>
+        </div>
+        <div id="detailsDescWrapper">
+            <p id="detailsModDesc">
+                This mod does unspeakable things to your game. Do not install it, it is cursed.<br>
+                It will literally kill your game.<br>
+                <br>
+                <br>
+                This is your last warning.
+            </p>
+        </div>
+
     </div>
 
     <div id="playContainer">
@@ -57,160 +82,44 @@
                 / PLACEHOLDER TEXT /
             </p>
             <button class="popupButton" data-btn="yes">Yes</button>
-            <button class="popupButton" data-btn="no">No</button>
-            <button class="popupButton" data-btn="ok">Okay</button>
+            <button class="popupButton" data-btn="no" onclick="closePopup()">No</button>
+            <button class="popupButton" data-btn="ok" onclick="closePopup()">Okay</button>
             <button class="popupButton" data-btn="close" onclick="closePopup()">Close</button>
         </div>
     </div>
 </body>
 <script>
-    const mods = [
-        {
-            id: "pd2-jewelry-store",
-            version: "1.0.0-alpha+20230910231200",
-            name: "Precious Things Jewelry Store",
-            desc: "The classic Jewelry Store heist reimagined",
-            authors: ["Capcake", "Florens"]
-        },
-        {
-            id: 'void2',
-            version: '1.1',
-            name: 'VoidUI2',
-            desc: 'The classic Jewelry Store heist reimagined yet again',
-            authors: ['Xeletron']
-        },
-        {
-            id: "xelemod",
-            version: "1.1",
-            name: "Xeletron's Mod",
-            desc: "The classic Jewelry Store heist reimagined yet again",
-            authors: ["Capcake", "Florens", "soosh.exe"]
-        },
-        {
-            id: "pd2-jewelry-store2",
-            version: "1.1",
-            name: "Jewelry Store 2 - Electric Boogaloo",
-            desc: "The classic Jewelry Store heist reimagined yet again",
-            authors: ["Capcake", "Florens", "soosh.exe"]
-        },
-        {
-            id: "pd2-jewelry-store",
-            version: "1.0.0-alpha+20230910231200",
-            name: "Precious Things Jewelry Store",
-            desc: "The classic Jewelry Store heist reimagined",
-            authors: ["Capcake", "Florens"]
-        },
-        {
-            id: 'void2',
-            version: '1.1',
-            name: 'VoidUI2',
-            desc: 'The classic Jewelry Store heist reimagined yet again',
-            authors: ['Xeletron']
-        },
-        {
-            id: "xelemod",
-            version: "1.1",
-            name: "Xeletron's Mod",
-            desc: "The classic Jewelry Store heist reimagined yet again",
-            authors: ["Capcake", "Florens", "soosh.exe"]
-        },
-        {
-            id: "pd2-jewelry-store2",
-            version: "1.1",
-            name: "Jewelry Store 2 - Electric Boogaloo",
-            desc: "The classic Jewelry Store heist reimagined yet again",
-            authors: ["Capcake", "Florens", "soosh.exe"]
-        },
-        {
-            id: "pd2-jewelry-store",
-            version: "1.0.0-alpha+20230910231200",
-            name: "Precious Things Jewelry Store",
-            desc: "The classic Jewelry Store heist reimagined",
-            authors: ["Capcake", "Florens"]
-        },
-        {
-            id: 'void2',
-            version: '1.1',
-            name: 'VoidUI2',
-            desc: 'The classic Jewelry Store heist reimagined yet again',
-            authors: ['Xeletron']
-        },
-        {
-            id: "xelemod",
-            version: "1.1",
-            name: "Xeletron's Mod",
-            desc: "The classic Jewelry Store heist reimagined yet again",
-            authors: ["Capcake", "Florens", "soosh.exe"]
-        },
-        {
-            id: "pd2-jewelry-store2",
-            version: "1.1",
-            name: "Jewelry Store 2 - Electric Boogaloo",
-            desc: "The classic Jewelry Store heist reimagined yet again",
-            authors: ["Capcake", "Florens", "soosh.exe"]
-        },
+    
+    let launcherConfig = {
+        launcherVersion: '1.0',
+        gameLaunchPossible: true,
+        keeplauncherOpen: true,
+        gameDirectory: "C:/Program Files (x86)/Steam/steamapps/common/PAYDAY 3"
+    }
 
-        // example mods, delete later
-
-    ];
+    let mods = [];
+    let currentSelectedMod;
 
     const modList = document.getElementById('modList');
+    const launcherVersion = document.getElementById('version');
 
-    function createModlist(mod){
-        const modItem = document.createElement('li');
-        const modInfo = document.createElement('span');
-        const delBtn = document.createElement('button');
-        const togBtn = document.createElement('button');
-
-        let authors = mod['authors'].join(', ');
-
-        modItem;
-        modItem.classList.add('modItem');
-        modItem.setAttribute('name', mod['name']);
-        modList.appendChild(modItem);
-
-        modInfo;
-        modInfo.innerText = mod['name'];
-        modInfo.setAttribute('modversion', mod['version']);
-        modInfo.setAttribute('author', authors)
-        modItem.appendChild(modInfo)
-
-        delBtn;
-        delBtn.classList.add('modBtn');
-        delBtn.setAttribute('icon', 'delete');
-        delBtn.setAttribute('onclick', 'deleteMod(this)')
-        modItem.appendChild(delBtn);
-
-        togBtn;
-        togBtn.classList.add('modBtn');
-        togBtn.setAttribute('icon', 'toggle');
-        modItem.appendChild(togBtn);
-
-        console.log(mod.id + ' added to list as: "' + mod.name + '"')
+    const settings = {
+        launchBtn: document.getElementById('launchGame'),
+        gameVersion: document.getElementById('gameVersion'),
+        btn: document.querySelector('.settingsButton[icon="settings"]'),
+        panel: document.getElementById('settingsPanel'),
+        gamedir: document.getElementById('setGameDir'),
+        keepOpen: document.getElementById('setKeepOpen')
     };
-
-    mods.forEach(object => {
-        createModlist(object);
-    });
-
-    sortList(modList, 'li');
-
-    const settingsBtn = document.querySelector('.settingsButton[icon="settings"]');
-    const settingsPanel = document.getElementById('settingsPanel');
-
-    function toggleSettingsPanel(){
-        settingsPanel.classList.toggle('hide');
-        settingsBtn.classList.toggle('active');
+    const details = {
+        icon: document.getElementById('detailsModIcon'),
+        name: document.getElementById('detailsModName'),
+        version: document.getElementById('detailsModVersion'),
+        author: document.getElementById('detailsModAuthor'),
+        website: document.getElementById('detailsModWebsite'),
+        issues: document.getElementById('detailsModIssues'),
+        desc: document.getElementById('detailsModDesc'),
     };
-
-    function deleteMod(mod){
-        console.log(mod.parentNode);
-        modName = mod.parentNode.getAttribute('name');
-        text = "Are you sure you want to uninstall " + modName + "?";
-        openPopup('Uninstall this mod?', text, 'choice');
-        // dunno how to go on from here lol
-    };
-
     const popup = {
         popup: document.querySelector('.popup'),
         header: document.getElementById('popupHeader'),
@@ -223,14 +132,218 @@
         }
     };
 
+    // Call this to after changing and saving the config to update the UI with the new settigns.
+    function updateSettings(){
+        	launcherVersion.innerText = 'v' + launcherConfig.launcherVersion;
+            switch(launcherConfig.gameLaunchPossible){
+                case true:
+                    settings.launchBtn.removeAttribute('disabled');
+                    break;
+                case false:
+                    settings.launchBtn.setAttribute('disabled', null);
+                    break;
+            };
+
+            settings.gamedir.value = launcherConfig.gameDirectory;
+
+            if (launcherConfig.gameDirectory.toLowerCase().includes('steam')){
+                console.log('probably steam');
+                settings.gameVersion.setAttribute('gameversion', 'steam');
+            }else if(launcherConfig.gameDirectory.toLowerCase().includes('epic')){
+                console.log('probably egs');
+                settings.gameVersion.setAttribute('gameversion', 'egs');
+            }else{
+                console.log('idk man');
+                settings.gameVersion.setAttribute('gameversion', '?');
+            }
+
+            switch (launcherConfig.keeplauncherOpen){
+                case true:
+                    settings.keepOpen.checked = true;
+                    break;
+                case false:
+                    settings.keepOpen.checked = false;
+                    break;
+            };
+
+    };
+
+    updateSettings();
+
+    function saveSettings(){
+        let newGameDirectory = settings.gamedir.value;
+        let newKeepOpen = settings.keepOpen.checked
+        // CALL FUNCTION TO UPDATE USER CONFIG
+
+        console.log(newKeepOpen);
+        console.log(newGameDirectory);
+        toggleSettingsPanel();
+    }
+
+    
+    function toggleSettingsPanel(){
+        settings.panel.classList.toggle('hide');
+        settings.btn.classList.toggle('active');
+    };
+
+    // example: createModItem('amog', 'Amogus Lootbags', 'Replaces Lootbags with amogus', '1.0.2', 'Lenny, Capcake', 'https://www.amongus.com', 'https://www.github.com/amogus', 'path to icon', true[if mod is enabled or not])
+    function createModItem(id, name, desc, version, author, website, issues, icon, active){
+        const modItem = document.createElement('li');
+        const modInfo = document.createElement('span');
+        const delBtn = document.createElement('button');
+        const togBtn = document.createElement('button');
+
+        modItem;
+        modItem.classList.add('modItem');
+        modItem.setAttribute('mod-id', id);
+        modItem.setAttribute('mod-name', name);
+        modItem.setAttribute('mod-version', version);
+        modItem.setAttribute('mod-desc', desc);
+        modItem.setAttribute('mod-author', author);
+        modItem.setAttribute('mod-website', website);
+        modItem.setAttribute('mod-issues', issues);
+        modItem.setAttribute('mod-icon', icon);
+        modList.appendChild(modItem);
+        
+        modInfo.innerText = name;
+        modInfo.setAttribute('onclick', 'openMod(this.parentNode)');
+        modInfo.setAttribute('modversion', version);
+        modInfo.setAttribute('author', author)
+        modItem.appendChild(modInfo);
+
+        delBtn;
+        delBtn.classList.add('modBtn');
+        delBtn.setAttribute('icon', 'delete');
+        delBtn.setAttribute('onclick', 'confirmDeleteMod(this)');
+        modItem.appendChild(delBtn);
+        
+        togBtn;
+        togBtn.classList.add('modBtn');
+        togBtn.setAttribute('icon', 'toggle');
+        togBtn.setAttribute('onclick', 'toggleMod(this)');
+        modItem.appendChild(togBtn);
+
+        console.log(id + ' added to list as: "' + name + '"')
+
+        switch (active){
+            case true:
+                modItem.setAttribute('installed', 'true');
+                togBtn.setAttribute('ticked', null);
+                break;
+            case false:
+                modItem.setAttribute('installed', 'false');
+                togBtn.removeAttribute('ticked');
+                break;
+        };
+            
+        modItem.setAttribute('mod-index', mods.length);
+        mods.push(modItem);
+
+        console.log(mods);
+        
+    };
+
+    function openMod(selectedMod){
+        let mod = {
+            id: selectedMod.getAttribute('mod-id'),
+            icon: selectedMod.getAttribute('mod-icon'),
+            name: selectedMod.getAttribute('mod-name'),
+            desc: selectedMod.getAttribute('mod-desc'),
+            version: selectedMod.getAttribute('mod-version'),
+            author: selectedMod.getAttribute('mod-author'),
+            website: selectedMod.getAttribute('mod-website'),
+            issues: selectedMod.getAttribute('mod-issues'),
+        };
+
+        currentSelectedMod = mod.id;
+
+        details.name.innerText = mod.name;
+        details.version.setAttribute('modversion', mod.version);
+        details.author.innerText = mod.author;
+        details.author.classList.remove('hide');
+        details.desc.innerText = mod.desc;
+
+        switch (mod.website){
+            case null:
+            case undefined:
+                console.log('no website link found');
+                details.website.removeAttribute('href');
+                details.website.setAttribute('disabled', null);
+                break;
+            case 'none':
+                console.log('no website set');
+                details.website.removeAttribute('href');
+                details.website.setAttribute('disabled', null);
+                break;
+            default:
+                console.log(mod.website);
+                details.website.href = mod.website;
+                details.website.removeAttribute('disabled')
+                break;
+        };
+
+        switch (mod.issues){
+            case null:
+            case undefined:
+                console.log('no issues link found');
+                details.issues.removeAttribute('href');
+                details.issues.setAttribute('disabled', null);
+                break;
+            case 'none':
+                console.log('no issues link set');
+                details.issues.removeAttribute('href');
+                details.issues.setAttribute('disabled', null);
+                break;
+            default:
+                console.log(mod.issues);
+                details.issues.href = mod.issues;
+                details.issues.removeAttribute('disabled');
+                break;
+        };
+
+        details.icon.src = mod.icon;
+        details.icon.addEventListener('error', e =>{
+            console.log('no icon found!');
+            details.icon.src = 'img/missing_image.svg';
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        console.log(selectedMod);
+
+    };
+
+    function confirmDeleteMod(modItem){
+        console.log(modItem);
+        let text = 'Are you sure you want to uninstall ' + modItem.parentNode.getAttribute('mod-name') + '?'
+        confirmDelete('Uninstall this mod?', text, modItem)
+        console.log('yeet ', modItem.parentNode.getAttribute('mod-name'));
+
+    };
+    function deleteMod(modItem){
+        modItem.parentNode.remove();
+        mods[modItem.parentNode.getAttribute('mod-index')] = null;
+        console.log(mods)
+        if(currentSelectedMod == modItem.parentNode.getAttribute('mod-id')){
+            details.name.innerText = 'No mod selected...';
+            details.icon.src = "img/missing_image.svg";
+            details.version.setAttribute('modversion', '');
+            details.author.innerText = '';
+            details.desc.innerText = '';
+            details.author.classList.add('hide');
+            details.issues.removeAttribute('href');
+            details.issues.setAttribute('disabled', null);
+            details.website.removeAttribute('href');
+            details.website.setAttribute('disabled', null);
+        }
+        
+        console.log(modItem.parentNode.getAttribute('mod-name') + ' deleted');
+        // CALL FUNCTION TO DELETE/UNINSTALL MOD
+    };
+
     function openPopup(header, text, buttons){
         popup.header.innerText = header;
         popup.text.innerText = text;
         switch (buttons){
-            case 'choice':
-                popup.btn.ok.setAttribute('hidden', '');
-                popup.btn.close.setAttribute('hidden', '');
-                break;
             case 'ok':
                 popup.btn.yes.setAttribute('hidden', '');
                 popup.btn.no.setAttribute('hidden', '');
@@ -255,21 +368,62 @@
     function closePopup(){
         popup.popup.classList.add('hide');
         popup.header.innerText = "/ PLACEHOLDER HEADER /";
-        popup.text.innerText = "/ PLACEHOLDER HEADER /";
+        popup.text.innerText = "/ PLACEHOLDER TEXT /";
         popup.btn.yes.removeAttribute('hidden');
         popup.btn.no.removeAttribute('hidden');
         popup.btn.ok.removeAttribute('hidden');
         popup.btn.close.removeAttribute('hidden');
     };
-
-    function launchGame(){
-        openPopup('Launching game...', 'Your game is now launching and this window will close.', 'none')
+    function confirmDelete(header, text, item){
+        popup.header.innerText = header;
+        popup.text.innerText = text;
+        popup.btn.ok.setAttribute('hidden', '');
+        popup.btn.close.setAttribute('hidden', '');
+        popup.popup.classList.remove('hide');
+        popup.btn.yes.addEventListener('click', e =>{
+            closePopup();
+            deleteMod(item);
+        });
     };
 
-    const infotext = 'Placeholder text.\n\n"oh nyo"\n- kitteh';
+    function toggleMod(modItem){
+        console.log(modItem);
+        let modName = modItem.parentNode.getAttribute('mod-name');
+        switch (modItem.parentNode.getAttribute('installed')){
+            case 'true':
+                modItem.parentNode.setAttribute('installed', 'false');
+                modItem.removeAttribute('ticked');
+                let offtext = modName + ' has been disabled.';
+                openPopup('Mod Disabled', offtext, 'ok');
+                // CALL FUNCTION TO DISABLE MOD
+                break;
+            case 'false':
+                modItem.parentNode.setAttribute('installed', 'true');
+                modItem.setAttribute('ticked', '');
+                let ontext = modName + ' has been enabled.';
+                openPopup('Mod enabled', ontext, 'ok');
+                // CALL FUNCTION TO ENABLE MOD
+                break;
+        }
+    };
 
+    function launchGame(){
+        if(settings.gameLaunchPossible == true){
+            // CALL FUNCTION TO LAUNCH GAME
+            openPopup('Launching game...', 'Your game is now launching and this window will close.', 'none')
+        }
+    };
+
+    
     function toggleInfo(){
-        openPopup('Information', infotext, 'close');
+        const infotext = 'Placeholder text.\n\n"oh nyo"\n- kitteh\n\nidk put like credits here or something';
+        openPopup('', infotext, 'close');
+    };
+
+    function checkUpdates(){
+        //CALL FUNCTION TO CHECK FOR UPDATES
+        // IF NONE ARE AVAILABLE CALL FUNCTION BELOW
+        openPopup('No updates found', 'Your mods are up-to-date!', 'ok');
     };
 
     // borrowed from w3schools.com
@@ -290,7 +444,7 @@
             shouldSwitch = false;
             /* check if the next item should
             switch place with the current item: */
-            if (b[i].getAttribute('name').toLowerCase() > b[i + 1].getAttribute('name').toLowerCase()) {
+            if (b[i].getAttribute('mod-name').toLowerCase() > b[i + 1].getAttribute('mod-name').toLowerCase()) {
                 /* if next item is alphabetically
                 lower than current item, mark as a switch
                 and break the loop: */
@@ -306,5 +460,11 @@
             }
         }
     }
+
+    function test(){
+        createModItem('fuel1', 'Fueled Feud 1', 'Custom Heist mod from PD2 ported over to PD3.', '1.3', 'Xeletron, TimeForSteve, Croqui42, Rickerus', 'www.paydaymaps.net', 'mws.net', 'img/heistgame.png', false);
+        createModItem('fuel2', 'Fueled Feud 2', 'Custom Heist mod from PD2 ported over to PD3.', '1.3', 'Xeletron, TimeForSteve, Croqui42, Rickerus', 'www.paydaymaps.net', 'mws.net', '', true);
+        createModItem('fuel3', 'Fueled Feud 3', 'Custom Heist mod from PD2 ported over to PD3.', '1.3', 'Xeletron, TimeForSteve, Croqui42, Rickerus', 'www.paydaymaps.net', 'mws.net', 'img/example.png', true);
+    };
 </script>
 </html>
