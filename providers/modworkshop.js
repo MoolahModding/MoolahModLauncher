@@ -4,7 +4,7 @@ async function getCurrentModVersion(id) {
     method: "GET"
   });
 
-  return response.body;
+  return response.text();
 }
 
 function getLatestVersionDownload(id) {}

@@ -1,34 +1,36 @@
 const path = require('path');
 const regedit = require('winreg');
 
+const FILE_EXTENSION = '.pd3mod';
+
 function installShellExtension(appPath) {
+	console.log(`Installing ${FILE_EXTENSION} shell extension`)
 	const exePath = path.resolve(appPath, 'moolahmodlauncher.exe');
-	const fileExtension = '.pd3mod';
 
 	const key = new regedit({
 		hive: regedit.HKCU,
-		key: '\\Software\\Classes\\' + fileExtension
+		key: '\\Software\\Classes\\' + FILE_EXTENSION
 	});
 
 	key.create(() => {
-		key.set('', regedit.REG_SZ, 'MoolahModLauncher.' + fileExtension, () => {
-			
+		key.set('', regedit.REG_SZ, 'MoolahModLauncher.' + FILE_EXTENSION, () => {
+
 			const key_icon = new regedit({
 				hive: regedit.HKCU,
-				key: '\\Software\\Classes\\' + fileExtension + '\\DefaultIcon'
+				key: '\\Software\\Classes\\' + FILE_EXTENSION + '\\DefaultIcon'
 			});
-			
+
 			key_icon.create(() => {
 				key_icon.set('', regedit.REG_SZ, `"${exePath}",0`, () => {
-					
+
 					const key_shell = new regedit({
 						hive: regedit.HKCU,
-						key: '\\Software\\Classes\\' + fileExtension + '\\shell\\open\\command'
+						key: '\\Software\\Classes\\' + FILE_EXTENSION + '\\shell\\open\\command'
 					});
-					
+
 					key_shell.set('', regedit.REG_SZ, `"${exePath}" "%1"`, () => {
-						console.log(`File extension for ${fileExtension} installed.`);
-					});	
+						console.log(`File extension for ${FILE_EXTENSION} installed.`);
+					});
 				});
 			});
 		});
@@ -36,15 +38,19 @@ function installShellExtension(appPath) {
 }
 
 function uninstallShellExtension() {
-	const fileExtension = '.pd3mod';
+	console.log(`Uninstalling ${FILE_EXTENSION} shell extension`)
 
 	const key = new regedit({
 		hive: regedit.HKCU,
-		key: '\\Software\\Classes\\' + fileExtension
+		key: '\\Software\\Classes\\' + FILE_EXTENSION
 	});
 
-	key.destroy(() => {
-		console.log(`File extension for ${fileExtension} uninstalled.`);
+	key.destroy(err => {
+        if (err) {
+            console.error(`Failed to uninstall ${FILE_EXTENSION} file extension.`);
+        } else {
+            console.log(`File extension for ${FILE_EXTENSION} uninstalled.`);
+        }
 	});
 }
 

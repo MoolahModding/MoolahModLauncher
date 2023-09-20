@@ -1,5 +1,3 @@
-// TODO: Merge with Leon's steam locator
-
 const fs = require('node:fs');
 const path = require('node:path');
 const regedit = require('winreg');
@@ -43,28 +41,42 @@ function locateSteamInstall() {
 }
 
 function locateEpicInstall() {
-  const epicManifestPath = "C:/ProgramData/Epic/EpicGamesLauncher/Data/Manifests";
-  if(!fs.existsSync(epicManifestPath))
-    return "NOTFOUND";
+  return new Promise((resolve, reject) => {
+    const epicManifestPath = "C:/ProgramData/Epic/EpicGamesLauncher/Data/Manifests";
+    if (!fs.existsSync(epicManifestPath))
+      reject("NOTFOUND");
 
-  var manifests = fs.readdirSync(epicManifestPath);
+    var manifests = fs.readdirSync(epicManifestPath);
 
-  for (var manifest in manifests) {
-    if (!manifests[manifest].endsWith(".item"))
-      continue;
+    for (var manifest in manifests) {
+      if (!manifests[manifest].endsWith(".item"))
+        continue;
 
-    var manifestJson = JSON.parse(fs.readFileSync(path.join(epicManifestPath, manifests[manifest])));
+      var manifestJson = JSON.parse(fs.readFileSync(path.join(epicManifestPath, manifests[manifest])));
 
-    // TODO: change "PAYDAY 3" to whatever the game uses to identity itself
-    if (manifestJson["DisplayName"] == "PAYDAY 3") {
-      return manifestJson["InstallLocation"];
+      // TODO: change "PAYDAY 3" to whatever the game uses to identify itself
+      if (manifestJson["DisplayName"] === "PAYDAY 3") {
+        resolve(manifestJson["InstallLocation"]);
+        return;
+      }
     }
-  }
 
-  return "NOTFOUND";
+    reject("NOTFOUND");
+  })
+}
+
+function resolveInstall() {
+  return locateSteamInstall()
+      .catch(() => {
+        console.log('Steam installation not found or encountered an error. Falling back to Epic.');
+        return locateEpicInstall()
+            .catch(() => {
+              console.error('Epic installation not found or encountered an error.');
+              throw new Error('No game installation not found.');
+            });
+      });
 }
 
 module.exports = {
-  locateSteamInstall,
-  locateEpicInstall
+  resolveInstall
 }
