@@ -14,15 +14,19 @@
     --tooltipDelay: .5s;
     --modIconSize: 128px;
 }
+
 *::-webkit-scrollbar-thumb{
     background-color: var(--colorHover);
 }
+
 *::-webkit-scrollbar{
     background-color: var(--colorHover);
 }
+
 *::-webkit-scrollbar-corner{
     background-color: #313131;
 }
+
 body{
     background-color: #191919;
     height: calc(100vh - 5rem);
@@ -42,26 +46,32 @@ body{
     overflow: scroll;
     scrollbar-gutter: stable;
 }
+
 body::-webkit-scrollbar-thumb{
     background-color: var(--colorHover);
 }
+
 body::-webkit-scrollbar{
     background-color: var(--colorHover);
 }
 
+
 div#logoContainer{
     grid-area: logo;
 }
+
 div#logoContainer > h1{
     margin: 0;
     border-bottom: solid;
     border-color: var(--colorPD3);
 }
+
 h1 > span{
     /* content: 'v'attr(version); */
     font-size: 1rem;
     padding-left: .8rem;
 }
+
 div#logoContainer > h1::before{
     content: '';
     display: inline-block;
@@ -72,26 +82,28 @@ div#logoContainer > h1::before{
     translate: 0 calc(var(--fontSize) / 3.5);
     margin-right: .3rem;
 }
+
 div#playContainer{
     grid-area: play;
     display: grid;
     place-items: center;
 }
+
 #launchGame{
     position: relative;
     box-sizing: border-box; 
     display: inline-block;
-    background: none;
     border: none;
     color: white;
     font-size: 1.5rem;
     text-transform: uppercase;
     padding: 1.5rem;
-    background-color: var(--colorBG);
+    background: var(--colorBG) none;
     cursor: pointer;
     user-select: none;
     box-shadow: 0 0 1rem var(--colorBG);
 }
+
 #launchGame::before{
     content: '';
     position: absolute;
@@ -104,16 +116,20 @@ div#playContainer{
     transition-timing-function: linear;
     transform-origin: center;
 }
+
 #launchGame:hover::before{
     scale: 1 1;
 }
+
 #launchGame[disabled]{
     color: var(--colorDisabled);
     cursor: not-allowed;
 }
+
 #launchGame[disabled]:hover::before{
     scale: 0 1;
 }
+
 #launchGame[disabled]:hover::after{
     content: 'Game launch currently not possible.';
     position: absolute;
@@ -128,6 +144,7 @@ div#playContainer{
     translate: -50%;
     text-transform: unset;
 }
+
 #gameVersion{
     display: block;
     margin: .4rem;
@@ -135,10 +152,12 @@ div#playContainer{
     font-size: .9rem;
     user-select: none;
 }
+
 #gameVersion::after{
     content: attr(gameversion);
     text-transform: capitalize;
 }
+
 #gameVersion[gameversion="egs"]::after{
     content: attr(gameversion);
     text-transform: uppercase;
@@ -152,6 +171,7 @@ div#modlistContainer{
     display: grid;
     grid-template-rows: auto 1fr;
 }
+
 h2{
     border-bottom: solid;
     margin-bottom: .1rem;
@@ -159,11 +179,13 @@ h2{
     border-color: var(--colorPD3);
     font-size: var(--headerSize);
 }
+
 #modListWrapper{
     overflow-y: auto;
     scrollbar-gutter: stable;
     padding-top: 1rem;
 }
+
 #modList{
     list-style: none;
     padding-left: 2rem;
@@ -171,13 +193,12 @@ h2{
     padding-top: 1rem;
     margin: 0;
 }
+
 .modItem{
     display: grid;
     padding: .2rem;
     margin-bottom: .8rem;
-    outline: solid;
-    outline-color: var(--colorOutline);
-    outline-width: 2px;
+    outline: var(--colorOutline) solid 2px;
     border-left: solid;
     border-width: var(--tickboxSize);
     border-color: transparent;
@@ -186,53 +207,62 @@ h2{
     gap: .5rem;
     user-select: all;
 }
+
 .modItem:hover{
     background-color: var(--colorHover);
 }
+
 .modItem[installed="true"]{
     border-color: var(--colorOutline);
 }
+
 .modItem > span{
     display: inline-block;
     height: 100%;
     user-select: none;
     cursor: pointer;
 }
+
 .modItem > span[author]::after{
     content: ' by: 'attr(author);
     color: hsl(0, 0%, 80%);
     display: block;
 }
+
 .modItem > span[author=""]::after{
     content: ''
 }
+
 .modItem > span[modversion]::before{
     content: 'v'attr(modversion)' ';
     color: hsla(0, 0%, 80%, 0.8);
 }
+
 .modItem > span[modversion=""]::before{
     content: '';
 }
+
 .modBtn{
     border: none;
-    background: none;
     display: inline-block;
     height: calc(var(--fontSize) * 1.5);
     aspect-ratio: 1;
     background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: none no-repeat center;
     margin-left: auto;
     margin-right: 0;
     cursor: pointer;
     position: relative;
 }
+
 .modBtn[icon="delete"]{
     background-image: url('img/trash.svg');
 }
+
 .modBtn[icon="toggle"]{
     background-image: url('img/tickbox_empty.svg');
 }
+
 .modBtn::after{
     content: '';
     position: absolute;
@@ -247,19 +277,24 @@ h2{
     pointer-events: none;
     transition: .2s;
 }
+
 .modBtn[icon="delete"]::after{
     content: 'Uninstall this mod'
 }
+
 .modBtn[icon="toggle"]::after{
     content: 'Enable/disable this mod'
 }
+
 .modBtn:hover::after{
     opacity: 1;
     transition-delay: var(--tooltipDelay);
 }
+
 .modBtn[ticked]{
     background-image: url('img/tickbox_ticked.svg');
 }
+
 .modBtn:hover{
     background-color: var(--colorBG);
 }
@@ -272,6 +307,7 @@ h2{
     place-items: center;
     backdrop-filter: blur(5px);
 }
+
 #popupContainer{
     min-width: 50%;
     max-width: 50%;
@@ -280,12 +316,14 @@ h2{
     font-size: var(--fontSize);
     position: relative;
 }
+
 #popupHeader{
     margin: 0;
     border-bottom: solid;
     border-color: var(--colorPD3);
     font-size: calc(var(--fontSize) * 1.5);
 }
+
 #popupHeader::before{
     content: '';
     display: inline-block;
@@ -297,30 +335,30 @@ h2{
     background-size: contain;
     background-position: center;
 }
+
 .popupButton{
     display: inline-block;
     margin-block: .5rem;
     font-size: calc(var(--fontSize) * 1.3);
     box-sizing: content-box;
     background: none;
-    border: none;
     cursor: pointer;
     color: white;
-    outline: solid;
-    outline-width: 2px;
-    outline-color: var(--colorOutline);
+    outline: var(--colorOutline) solid 2px;
     margin-right: 1rem;
-    border-left: solid;
-    border-width: .5rem;
-    border-color: transparent;
+    border: .5rem none transparent;
+    border-left-style: solid;
     padding-right: 1rem;
 }
+
 .popupButton:hover{
     border-color: var(--colorOutline);
 }
+
 .popupButton[data-btn="yes"]{
     background-color: var(--g);
 }
+
 .popupButton[data-btn="no"]{
     background-color: var(--r);
 }
@@ -329,6 +367,7 @@ h2{
     background-color: var(--colorBG);
     padding: .5rem;
 }
+
 .settingsButton{
     border: none;
     background: none;
@@ -341,22 +380,28 @@ h2{
     /* background-color: rgba(0, 0, 0, 0.5); */
     transition: filter .2s;
 }
+
 .settingsButton[icon="settings"]{
     background-image: url('img/settings.svg');
 }
+
 .settingsButton[icon="folder"]{
     background-image: url('img/folder.svg');
 }
+
 .settingsButton[icon="info"]{
     background-image: url('img/info.svg');
 }
+
 .settingsButton[icon="updates"]{
     background-image: url('img/update.svg');
 }
+
 .settingsButton:hover{
     background-color: var(--colorHover);
     cursor: pointer;
 }
+
 .settingsButton::after{
     content: attr(tooltip);
     position: absolute;
@@ -371,16 +416,19 @@ h2{
     pointer-events: none;
     transition: .2s;
 }
+
 .settingsButton:hover::after{
     opacity: 1;
     transition-delay: var(--tooltipDelay);
 }
+
 #settingsPanel{
     padding-top: .5rem;
     overflow: hidden;
     transition: height 1s;
     padding-left: .5rem;
 }
+
 input{
     color: inherit;
     display: block;
@@ -388,20 +436,21 @@ input{
     border: none;
     background-color: var(--colorBG);
 }
+
 input[type="text"]{
     padding: .5rem;
     width: calc(100% - 1.5rem);
     border-left: solid;
     border-color: transparent;
-    outline: solid;
-    outline-width: 1px;
-    outline-color: hsl(0, 0%, 100%, .5);
+    outline: hsl(0, 0%, 100%, .5) solid 1px;
     margin-bottom: .3rem;
 }
+
 input[type="text"]:focus{
     border-color: var(--colorOutline);
     outline-color: var(--colorOutline);
 }
+
 input[type="submit"]{
     padding: .5rem;
     cursor: pointer;
@@ -409,9 +458,11 @@ input[type="submit"]{
     margin-top: 1rem;
     margin-inline: auto 0;
 }
+
 input[type="submit"]:hover{
     background-image: var(--colorHover);
 }
+
 input[type="checkbox"]{
     display: inline-block;
     -webkit-appearance: none;
@@ -419,21 +470,24 @@ input[type="checkbox"]{
     margin: 0;
     color: var(--colorOutline);
 }
+
 input[type="checkbox"]::before{
     content: '';
     display: inline-block;
     height: var(--fontSize);
     aspect-ratio: 1;
-    outline: solid;
-    outline-width: 2px;
+    outline: solid 2px;
     margin-right: .3rem;
 }
+
 input[type="checkbox"]:checked::before{
     background-color: var(--colorOutline);
 }
+
 hr{
     opacity: .2;
 }
+
 #detailsContainer{
     background-color: var(--colorBG);
     grid-area: details;
@@ -446,6 +500,7 @@ hr{
     "buttons buttons"
     "desc desc";
 }
+
 #detailsModIcon{
     grid-area: icon;
     width: 80%;
@@ -453,10 +508,12 @@ hr{
     user-select: none;
     pointer-events: none;
 }
+
 #detailsModIcon[src="img/missing_image.svg"]{
     opacity: .25;
     outline: dashed;
 }
+
 .detailsHeader{
     grid-area: header;
     padding-inline: 1rem;
@@ -464,17 +521,21 @@ hr{
     grid-template-rows: 50% auto 1fr;
     overflow-x: hidden;
 }
+
 .detailsHeader > span{
     font-size: var(--fontSize);
     display: block;
     color: grey;
 }
+
 #detailsModVersion[modversion]::before{
     content: 'v'attr(modversion);
 }
+
 #detailsModVersion[modversion=""]::before{
     content: '';
 }
+
 #detailsModAuthor::before{
     content: 'By: ';
 }
@@ -485,6 +546,7 @@ h3{
     font-size: var(--headerSize);
     overflow-y: hidden;
 }
+
 #detailsButtons{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -492,28 +554,27 @@ h3{
     grid-area: buttons;
     place-items: center;
 }
+
 .detailsLink{
     display: inline-block;
     font-size: var(--headerSize);
     color: white;
-    padding: .4rem;
-    padding-left: 1rem;
     text-decoration: none;
     /* background-color: #191919; */
     position: relative;
     box-shadow: 0 0 1rem var(--colorBG);
-    outline: solid;
-    outline-width: 2px;
-    outline-color: var(--colorOutline);
+    outline: var(--colorOutline) solid 2px;
     border-left: solid;
-    padding-right: calc(var(--tickboxSize) + 1rem);
+    padding: .4rem calc(var(--tickboxSize) + 1rem) .4rem 1rem;
     border-width: var(--tickboxSize);
     border-color: transparent;
     /* margin-right: 1rem; */
 }
+
 .detailsLink:hover{
     border-color: var(--colorOutline);
 }
+
 /* .detailsLink::before{
     content: '';
     position: absolute;
@@ -526,17 +587,22 @@ h3{
     transition-timing-function: linear;
     transform-origin: center;
 }
+
 .detailsLink:hover::before{
     scale: 1 1;
-} */
+}
+ */
+
 .detailsLink[disabled]{
     color: var(--colorDisabled);
     outline-color: var(--colorDisabled);
     cursor: not-allowed;
 }
+
 .detailsLink[disabled]:hover{
     border-color: transparent;
 }
+
 #detailsDescWrapper{
     /* background-color: red; */
     border-top: solid;
@@ -549,43 +615,55 @@ h3{
     overflow-y: scroll;
     padding: 1rem;
 }
+
 #detailsDesc{
     margin: 0
 }
+
 /* .detailsLink[disabled]:hover::before{
     scale: 0 1;
 } */
+
 /* #detailsModName::-webkit-scrollbar-track,
 #detailsModName::-webkit-scrollbar-thumb{
     background-color: #19191900;
     background-color: #ff0000;
 } */
+
 /* #detailsWrapper{
     overflow-y: scroll;
 }
+
 #detailsWrapper::-webkit-scrollbar-thumb{
     background-color: var(--colorHover);
 }
+
 #detailsWrapper::-webkit-scrollbar{
     background-color: var(--colorHover);
 } */
+
 /* #detailsTable{
     border-collapse: collapse;
     margin: 1rem
 } */
+
 /* tr{
     border-bottom: dotted;
     border-width: 1px;
 } */
+
 /* tr:nth-child(even){
     background-color: hsla(0, 0%, 100%, 0.075);
 } */
+
 /* tr:nth-child(odd){
     background-color: var(--colorBG);
 } */
+
 /* td{
     padding: .5rem;
 }
+
 tr td:first-child{
     padding-right: 1rem;
 } */
@@ -613,14 +691,17 @@ tr td:first-child{
     display: none;
     height: 0;
 }
+
 [hidden],
 [hidden]::before,
 [hidden]::after{
     display: none;
 }
+
 .show{
     height: auto;
 }
+
 .active{
     background-color: var(--colorHover);
 }

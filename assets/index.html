@@ -58,7 +58,7 @@
     </div>
 
     <div id="modlistContainer">
-        <h2 totalmods="x">Mods:</h1>
+        <h2 totalmods="x">Mods:</h2>
         <div id="modListWrapper">
             <ul id="modList">
                 <!-- <li class="modItem" installed="false">
@@ -133,9 +133,9 @@
     };
 
     // Call this to after changing and saving the config to update the UI with the new settigns.
-    function updateSettings(){
+    function updateSettings() {
         	launcherVersion.innerText = 'v' + launcherConfig.launcherVersion;
-            switch(launcherConfig.gameLaunchPossible){
+            switch(launcherConfig.gameLaunchPossible) {
                 case true:
                     settings.launchBtn.removeAttribute('disabled');
                     break;
@@ -146,10 +146,10 @@
 
             settings.gamedir.value = launcherConfig.gameDirectory;
 
-            if (launcherConfig.gameDirectory.toLowerCase().includes('steam')){
+            if (launcherConfig.gameDirectory.toLowerCase().includes('steam')) {
                 console.log('probably steam');
                 settings.gameVersion.setAttribute('gameversion', 'steam');
-            }else if(launcherConfig.gameDirectory.toLowerCase().includes('epic')){
+            }else if(launcherConfig.gameDirectory.toLowerCase().includes('epic')) {
                 console.log('probably egs');
                 settings.gameVersion.setAttribute('gameversion', 'egs');
             }else{
@@ -157,7 +157,7 @@
                 settings.gameVersion.setAttribute('gameversion', '?');
             }
 
-            switch (launcherConfig.keeplauncherOpen){
+            switch (launcherConfig.keeplauncherOpen) {
                 case true:
                     settings.keepOpen.checked = true;
                     break;
@@ -170,7 +170,7 @@
 
     updateSettings();
 
-    function saveConfig(){
+    function saveConfig() {
         let newGameDirectory = settings.gamedir.value;
         let newKeepOpen = settings.keepOpen.checked
         // CALL FUNCTION TO UPDATE USER CONFIG
@@ -197,19 +197,18 @@
     }
 
     
-    function toggleSettingsPanel(){
+    function toggleSettingsPanel() {
         settings.panel.classList.toggle('hide');
         settings.btn.classList.toggle('active');
-    };
+    }
 
     // example: createModItem('amog', 'Amogus Lootbags', 'Replaces Lootbags with amogus', '1.0.2', 'Lenny, Capcake', 'https://www.amongus.com', 'https://www.github.com/amogus', 'path to icon', true[if mod is enabled or not])
-    function createModItem(id, name, desc, version, author, website, issues, icon, active){
+    function createModItem(id, name, desc, version, author, website, issues, icon, active) {
         const modItem = document.createElement('li');
         const modInfo = document.createElement('span');
         const delBtn = document.createElement('button');
         const togBtn = document.createElement('button');
 
-        modItem;
         modItem.classList.add('modItem');
         modItem.setAttribute('mod-id', id);
         modItem.setAttribute('mod-name', name);
@@ -227,13 +226,11 @@
         modInfo.setAttribute('author', author)
         modItem.appendChild(modInfo);
 
-        delBtn;
         delBtn.classList.add('modBtn');
         delBtn.setAttribute('icon', 'delete');
         delBtn.setAttribute('onclick', 'confirmDeleteMod(this)');
         modItem.appendChild(delBtn);
         
-        togBtn;
         togBtn.classList.add('modBtn');
         togBtn.setAttribute('icon', 'toggle');
         togBtn.setAttribute('onclick', 'toggleMod(this)');
@@ -241,7 +238,7 @@
 
         console.log(id + ' added to list as: "' + name + '"')
 
-        switch (active){
+        switch (active) {
             case true:
                 modItem.setAttribute('installed', 'true');
                 togBtn.setAttribute('ticked', null);
@@ -250,16 +247,16 @@
                 modItem.setAttribute('installed', 'false');
                 togBtn.removeAttribute('ticked');
                 break;
-        };
+        }
             
         modItem.setAttribute('mod-index', mods.length);
         mods.push(modItem);
 
         console.log(mods);
         
-    };
+    }
 
-    function openMod(selectedMod){
+    function openMod(selectedMod) {
         let mod = {
             id: selectedMod.getAttribute('mod-id'),
             icon: selectedMod.getAttribute('mod-icon'),
@@ -279,7 +276,7 @@
         details.author.classList.remove('hide');
         details.desc.innerText = mod.desc;
 
-        switch (mod.website){
+        switch (mod.website) {
             case null:
             case undefined:
                 console.log('no website link found');
@@ -296,9 +293,9 @@
                 details.website.href = mod.website;
                 details.website.removeAttribute('disabled')
                 break;
-        };
+        }
 
-        switch (mod.issues){
+        switch (mod.issues) {
             case null:
             case undefined:
                 console.log('no issues link found');
@@ -315,7 +312,7 @@
                 details.issues.href = mod.issues;
                 details.issues.removeAttribute('disabled');
                 break;
-        };
+        }
 
         details.icon.src = mod.icon;
         details.icon.addEventListener('error', e =>{
@@ -326,20 +323,21 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
         console.log(selectedMod);
 
-    };
+    }
 
-    function confirmDeleteMod(modItem){
+    function confirmDeleteMod(modItem) {
         console.log(modItem);
         let text = 'Are you sure you want to uninstall ' + modItem.parentNode.getAttribute('mod-name') + '?'
         confirmDelete('Uninstall this mod?', text, modItem)
         console.log('yeet ', modItem.parentNode.getAttribute('mod-name'));
 
-    };
-    function deleteMod(modItem){
+    }
+
+    function deleteMod(modItem) {
         modItem.parentNode.remove();
         mods[modItem.parentNode.getAttribute('mod-index')] = null;
         console.log(mods)
-        if(currentSelectedMod == modItem.parentNode.getAttribute('mod-id')){
+        if (currentSelectedMod === modItem.parentNode.getAttribute('mod-id')) {
             details.name.innerText = 'No mod selected...';
             details.icon.src = "img/missing_image.svg";
             details.version.setAttribute('modversion', '');
@@ -356,10 +354,10 @@
         // CALL FUNCTION TO DELETE/UNINSTALL MOD
     };
 
-    function openPopup(header, text, buttons){
+    function openPopup(header, text, buttons) {
         popup.header.innerText = header;
         popup.text.innerText = text;
-        switch (buttons){
+        switch (buttons) {
             case 'ok':
                 popup.btn.yes.setAttribute('hidden', '');
                 popup.btn.no.setAttribute('hidden', '');
@@ -381,7 +379,7 @@
         popup.popup.classList.remove('hide');
     };
 
-    function closePopup(){
+    function closePopup() {
         popup.popup.classList.add('hide');
         popup.header.innerText = "/ PLACEHOLDER HEADER /";
         popup.text.innerText = "/ PLACEHOLDER TEXT /";
@@ -390,7 +388,7 @@
         popup.btn.ok.removeAttribute('hidden');
         popup.btn.close.removeAttribute('hidden');
     };
-    function confirmDelete(header, text, item){
+    function confirmDelete(header, text, item) {
         popup.header.innerText = header;
         popup.text.innerText = text;
         popup.btn.ok.setAttribute('hidden', '');
@@ -402,10 +400,10 @@
         });
     };
 
-    function toggleMod(modItem){
+    function toggleMod(modItem) {
         console.log(modItem);
         let modName = modItem.parentNode.getAttribute('mod-name');
-        switch (modItem.parentNode.getAttribute('installed')){
+        switch (modItem.parentNode.getAttribute('installed')) {
             case 'true':
                 modItem.parentNode.setAttribute('installed', 'false');
                 modItem.removeAttribute('ticked');
@@ -421,26 +419,25 @@
                 // CALL FUNCTION TO ENABLE MOD
                 break;
         }
-    };
+    }
 
-    function launchGame(){
-        if(launcherConfig.gameLaunchPossible == true){
+    function launchGame() {
+        if(launcherConfig.gameLaunchPossible === true) {
             // CALL FUNCTION TO LAUNCH GAME
             openPopup('Launching game...', 'Your game is now launching and this window will close.', 'none')
         }
-    };
+    }
 
-    
-    function toggleInfo(){
+    function toggleInfo() {
         const infotext = 'Placeholder text.\n\n"oh nyo"\n- kitteh\n\nidk put like credits here or something';
         openPopup('', infotext, 'close');
-    };
+    }
 
-    function checkUpdates(){
-        //CALL FUNCTION TO CHECK FOR UPDATES
+    function checkUpdates() {
+        // TODO: CALL FUNCTION TO CHECK FOR UPDATES
         // IF NONE ARE AVAILABLE CALL FUNCTION BELOW
         openPopup('No updates found', 'Your mods are up-to-date!', 'ok');
-    };
+    }
 
     // borrowed from w3schools.com
     function sortList(list, item) {
@@ -477,10 +474,10 @@
         }
     }
 
-    function test(){
+    function test() {
         createModItem('fuel1', 'Fueled Feud 1', 'Custom Heist mod from PD2 ported over to PD3.', '1.3', 'Xeletron, TimeForSteve, Croqui42, Rickerus', 'www.paydaymaps.net', 'mws.net', 'img/heistgame.png', false);
         createModItem('fuel2', 'Fueled Feud 2', 'Custom Heist mod from PD2 ported over to PD3.', '1.3', 'Xeletron, TimeForSteve, Croqui42, Rickerus', 'www.paydaymaps.net', 'mws.net', '', true);
         createModItem('fuel3', 'Fueled Feud 3', 'Custom Heist mod from PD2 ported over to PD3.', '1.3', 'Xeletron, TimeForSteve, Croqui42, Rickerus', 'www.paydaymaps.net', 'mws.net', 'img/example.png', true);
-    };
+    }
 </script>
 </html>
