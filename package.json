@@ -4,7 +4,9 @@
   "description": "A simple mod launcher",
   "main": "main.js",
   "scripts": {
-    "start": "electron . -install"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": {
     "type": "git",
@@ -17,10 +19,16 @@
   },
   "homepage": "https://github.com/MoolahModding/MoolahModLauncher#readme",
   "devDependencies": {
+    "@electron-forge/cli": "^6.4.2",
+    "@electron-forge/maker-squirrel": "^6.4.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
     "electron": "^26.2.0"
   },
   "dependencies": {
     "adm-zip": "^0.5.10",
+    "electron-squirrel-startup": "^1.0.0",
+    "octokit": "^3.1.0",
+    "update-electron-app": "^2.0.1",
     "winreg": "^1.2.4"
   }
 }
