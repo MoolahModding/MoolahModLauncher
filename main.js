@@ -49,10 +49,10 @@ app.on('ready', () => {
 
     // Check if our command line arguments include a path and install mod here
     // TESTING
-    const metaJson = modParser.readAndExtractMeta("test.pd3mod");
-    if (metaJson !== "ERROR") {
-        console.log(metaJson.name);
-    }
+    // const metaJson = modParser.readAndExtractMeta("test.pd3mod");
+    // if (metaJson !== "ERROR") {
+    //     console.log(metaJson.name);
+    // }
     // TESTING
 
     mainWindow = new BrowserWindow({
