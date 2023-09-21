@@ -5,30 +5,30 @@ const config = require('./config')
 function ILP_getInstalledMods() {
   config.loadConfig();
   // TODO: when we add msstore support, support WinGDK and Win64
-  var installDir = path.join(config.getConfigValue("gameDirectory"), "PAYDAY3/Binaries/Win64/Mods");
+  let installDir = path.join(config.getConfigValue("gameDirectory"), "PAYDAY3/Binaries/Win64/mods");
 
   if (!fs.existsSync(installDir)) {
     fs.mkdir(installDir)
   }
 
-  var mods = fs.readdirSync(installDir);
+  let mods = fs.readdirSync(installDir);
 
-  var finalMods = [];
+  let finalMods = [];
 
-  for (var mod in mods) {
-    if (!fs.lstatSync(path.join(installDir, mods[mod])).isDirectory()) {
+  for (let mod of mods) {
+    if (!fs.lstatSync(path.join(installDir, mod)).isDirectory()) {
       continue;
     }
-    if (!fs.existsSync(path.join(installDir, mods[mod], "pd3meta.json"))) {
+    if (!fs.existsSync(path.join(installDir, mod, "pd3mod.json"))) {
       continue;
     }
     try {
-      var meta = JSON.parse(fs.readFileSync(path.join(installDir, mods[mod], "pd3meta.json")));
-      meta["finalIconPath"] = "file:///" + path.join(installDir, mods[mod], meta["icon"]);
+      let meta = JSON.parse(fs.readFileSync(path.join(installDir, mod, "pd3mod.json")));
+      meta["finalIconPath"] = "file:///" + path.join(installDir, mod, meta["icon"]);
       console.log(meta["finalIconPath"]);
       finalMods.push(meta)
     } catch (e) {
-      console.warn("Mod: " + mods[mod] + " had an issue while installing: " + e.toString());
+      console.warn("Mod: " + mod + " could not be read from filesystem: " + e.toString());
     }
   }
 

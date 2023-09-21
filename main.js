@@ -15,14 +15,15 @@ app.on('ready', () => {
     // Check if the app was launched with the -install or -uninstall argument
     const isInstall = process.argv.includes('--install');
     const isUninstall = process.argv.includes('--uninstall');
-    const installPackages = process.argv.slice(1).filter(v => v !== '.' && !v.startsWith('--'));
+    const installPackagesPaths = process.argv.slice(1).filter(v => v !== '.' && !v.startsWith('--'));
+
+    loadConfig();
 
     if (isInstall) {
         if (process.platform === 'win32') {
             setup.installShellExtension(app.getAppPath());
         }
 
-        loadConfig();
         resolveInstall()
             .then(result => {
                 console.log("Install dir:", result);
@@ -41,9 +42,10 @@ app.on('ready', () => {
         }
         // After an uninstall we just quit
         app.quit();
-    } else if (installPackages.length > 0) {
-        for (let installPackage of installPackages) {
-            // TODO: install
+    } else if (installPackagesPaths.length > 0) {
+        for (let installPackagePath of installPackagesPaths) {
+            let installPackage = modParser.fromPath(installPackagePath)
+            installPackage.install()
         }
     }
 
