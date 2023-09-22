@@ -1,8 +1,8 @@
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const path = require("node:path");
 
 const modParser = require('./mod_parser');
-const { loadConfig, saveConfig, setConfigValue } = require('./config');
+const { loadConfig, saveConfig, setConfigValue, getConfigValue } = require('./config');
 const {resolveInstall} = require('./installlocators');
 const setup = require('./setup_win32');
 
@@ -12,7 +12,7 @@ require('update-electron-app')()
 let mainWindow;
 
 app.on('ready', () => {
-    // Check if the app was launched with the -install or -uninstall argument
+    // Check if the app was launched with the --install or --uninstall argument
     const isInstall = process.argv.includes('--install');
     const isUninstall = process.argv.includes('--uninstall');
     const installPackagesPaths = process.argv.slice(1).filter(v => v !== '.' && !v.startsWith('--'));
@@ -55,6 +55,7 @@ app.on('ready', () => {
             })
         }
     } else {
+        ipcMain.on("launch-game", handleLaunchGame)
         mainWindow = new BrowserWindow({
             width: 800, height: 600,
             webPreferences: {
@@ -73,3 +74,13 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
+
+function handleLaunchGame(event) {
+    shell.openExternal("steam://rungameid/1272080//-fileopenlog", {logUsage: true}).then(() => {
+            console.log("Game launched successfully!");
+            app.quit();
+        },
+        reason => {
+            dialog.showErrorBox("Failed to launch", `Failed to launch game\nNote: launching from the launcher is only supported on Steam for now.\n${reason}`)
+        })
+}

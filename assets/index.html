@@ -424,9 +424,10 @@
     };
 
     function launchGame(){
-        if(launcherConfig.gameLaunchPossible == true){
+        if(launcherConfig.gameLaunchPossible === true){
             // CALL FUNCTION TO LAUNCH GAME
             openPopup('Launching game...', 'Your game is now launching and this window will close.', 'none')
+            window.electronAPI.launchGame()
         }
     };
 
