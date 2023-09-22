@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, dialog } = require('electron');
 const path = require("node:path");
 
 const modParser = require('./mod_parser');
@@ -45,28 +45,27 @@ app.on('ready', () => {
     } else if (installPackagesPaths.length > 0) {
         for (let installPackagePath of installPackagesPaths) {
             let installPackage = modParser.fromPath(installPackagePath)
-            installPackage.install()
+            installPackage.install().then(() => {
+                dialog.showMessageBox(null, {title: "Mod installed successfully", message: `Successfully installed ${installPackagePath}`}).then(() => {
+                    app.quit()
+                })
+            }, reason => {
+                dialog.showErrorBox("Failed to install mod package", `Failed to install ${installPackagePath}\n${reason}`)
+                app.quit()
+            })
         }
+    } else {
+        mainWindow = new BrowserWindow({
+            width: 800, height: 600,
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js'),
+                nodeIntegration: true
+            },
+            icon: 'assets/img/modloader' // FIXME: svg not supported
+        });
+        mainWindow.loadFile('assets/index.html')
+            .catch(reason => console.error("Failed to load main window", reason));
     }
-
-    // Check if our command line arguments include a path and install mod here
-    // TESTING
-    // const metaJson = modParser.readAndExtractMeta("test.pd3mod");
-    // if (metaJson !== "ERROR") {
-    //     console.log(metaJson.name);
-    // }
-    // TESTING
-
-    mainWindow = new BrowserWindow({
-        width: 800, height: 600,
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true
-        },
-        icon: 'assets/img/modloader' // FIXME: svg not supported
-    });
-    mainWindow.loadFile('assets/index.html')
-        .catch(reason => console.error("Failed to load main window", reason));
 });
 
 app.on('window-all-closed', () => {
