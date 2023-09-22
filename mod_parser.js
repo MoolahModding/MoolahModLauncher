@@ -28,18 +28,18 @@ class InstallPackage {
 
         const pd3mod = this.zip.getEntry("pd3mod.json")
         const icon = this.zip.getEntry(iconPath)
-        const ue4ssLua = getCaseInsensitiveEntry(this.zip, "ue4ss/scripts/")
-        const ue4ssDlls = getCaseInsensitiveEntry(this.zip, "ue4ss/dlls/")
-        const pak = getCaseInsensitiveEntry(this.zip, "pak/")
+        const ue4ssLua = getCaseInsensitiveEntry(this.zip, "scripts/")
+        const ue4ssDlls = getCaseInsensitiveEntry(this.zip, "dlls/")
+        const pak = getCaseInsensitiveEntry(this.zip, "paks/")
 
         this.zip.extractEntryTo(pd3mod, modPath, true, true, false, null)
         this.zip.extractEntryTo(icon, modPath, true, true, false, null)
         if (ue4ssLua)
-            this.zip.extractEntryTo(ue4ssLua, path.join(modPath, "Scripts"), false, true, false, null)
+            this.zip.extractEntryTo(ue4ssLua, path.join(modPath, "scripts"), false, true, false, null)
         if (ue4ssDlls)
             this.zip.extractEntryTo(ue4ssDlls, path.join(modPath, "dlls"), false, true, false, null)
         if (pak)
-            this.zip.extractEntryTo(ue4ssDlls, path.join(modPath, "Scripts"), false, true, false, null)
+            this.zip.extractEntryTo(pak, path.join(modPath, pakPath), false, true, false, null)
     }
 }
 
