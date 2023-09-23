@@ -47,6 +47,7 @@ app.on('ready', () => {
         modParser.installAllPackages(installPackagesPaths)
     } else {
         ipcMain.on("launch-game", handleLaunchGame)
+        ipcMain.on("install-mods",  (event, packagePaths) => modParser.installAllPackages(packagePaths))
         mainWindow = new BrowserWindow({
             width: 800, height: 600,
             webPreferences: {

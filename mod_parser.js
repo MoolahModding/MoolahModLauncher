@@ -91,6 +91,7 @@ function installAllPackages(packagePaths) {
 
     Promise.all(packagePromises)
         .finally(() => {
+            // TODO: do not quit when installed from window
             if (failedInstalls.length === 0) {
                 dialog.showMessageBox(null, {
                     title: "All mods installed successfully",

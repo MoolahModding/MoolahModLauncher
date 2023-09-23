@@ -58,7 +58,7 @@
     </div>
 
     <div id="modlistContainer">
-        <h2 totalmods="x">Mods:</h1>
+        <h2 totalmods="x">Mods:</h2>
         <div id="modListWrapper">
             <ul id="modList">
                 <!-- <li class="modItem" installed="false">
@@ -87,10 +87,10 @@
 <script>
     
     let launcherConfig = {
-        launcherVersion: '1.0',
-        gameLaunchPossible: true,
-        keeplauncherOpen: true,
-        gameDirectory: "C:/Program Files (x86)/Steam/steamapps/common/PAYDAY 3"
+        launcherVersion: '1.0', // TODO: should come from package.json
+        gameLaunchPossible: true, // TODO: unimplemented
+        keepLauncherOpen: true, // TODO: unimplemented
+        gameDirectory: "C:/Program Files (x86)/Steam/steamapps/common/PAYDAY 3" // TODO: should come from config
     }
 
     let mods = [];
@@ -101,6 +101,7 @@
     }
 
     const modList = document.getElementById('modList');
+    const modListContainer = document.getElementById('modlistContainer');
     const launcherVersion = document.getElementById('version');
 
     const settings = {
@@ -132,7 +133,7 @@
         }
     };
 
-    // Call this to after changing and saving the config to update the UI with the new settigns.
+    // Call this to after changing and saving the config to update the UI with the new settings.
     function updateSettings(){
         	launcherVersion.innerText = 'v' + launcherConfig.launcherVersion;
             switch(launcherConfig.gameLaunchPossible){
@@ -157,7 +158,7 @@
                 settings.gameVersion.setAttribute('gameversion', '?');
             }
 
-            switch (launcherConfig.keeplauncherOpen){
+            switch (launcherConfig.keepLauncherOpen){
                 case true:
                     settings.keepOpen.checked = true;
                     break;
@@ -327,6 +328,19 @@
         console.log(selectedMod);
 
     };
+
+    modListContainer.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    })
+
+    modListContainer.addEventListener("drop", event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const paths = [...event.dataTransfer.files].map(file => file.path)
+        window.electronAPI.installMods(paths);
+    })
 
     function confirmDeleteMod(modItem){
         console.log(modItem);
