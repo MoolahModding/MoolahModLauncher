@@ -14,7 +14,8 @@ function handleStartupEvent() {
     return require('electron-squirrel-startup');
 }
 
-if (handleStartupEvent()) app.quit()
+// Exit early if we were invoked through Squirrel installer
+if (handleStartupEvent()) return
 
 const path = require("node:path");
 const modParser = require('./mod_parser');
@@ -43,7 +44,7 @@ app.on('ready', () => {
     }
 
     if (installPackagesPaths.length > 0) {
-        modParser.installAllPackages(packagePaths)
+        modParser.installAllPackages(installPackagesPaths)
     } else {
         ipcMain.on("launch-game", handleLaunchGame)
         mainWindow = new BrowserWindow({

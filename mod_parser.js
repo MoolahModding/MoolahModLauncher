@@ -107,6 +107,5 @@ function installAllPackages(packagePaths) {
 }
 
 module.exports = {
-    InstallPackage: PD3ModInstallPackage,
     installAllPackages
 }
