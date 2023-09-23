@@ -1,80 +1,98 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const regedit = require('winreg');
+const drivelist = require('drivelist');
 
 function locateSteamInstall() {
   return new Promise((resolve, reject) => {
     const key = new regedit({
       hive: regedit.HKLM,
       key: '\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 1272080',
-    });
+    })
 
     key.keyExists((err, exists) => {
       if (err) {
-        console.error(err);
-        reject("ERROR");
+        console.error(err)
+        reject("ERROR")
       } else if (exists) {
         key.values((err, items) => {
           if (err) {
-            console.error(err);
-            reject("ERROR");
+            console.error(err)
+            reject("ERROR")
           } else {
             let steamLocation = null;
             for (let i = 0; i < items.length; i++) {
               if (items[i].name === "InstallLocation") {
-                steamLocation = items[i].value;
-                console.log(`InstallLocation: ${steamLocation}`);
-                resolve(steamLocation);
+                steamLocation = items[i].value
+                console.log(`InstallLocation: ${steamLocation}`)
+                resolve(steamLocation)
                 return;
               }
             }
-            console.log('InstallLocation not found in the registry key.');
-            reject("NOTFOUND");
+            console.log('InstallLocation not found in the registry key.')
+            reject("NOTFOUND")
           }
         });
       } else {
-        console.log('Registry key not found.');
-        reject("NOTFOUND");
+        console.log('Registry key not found.')
+        reject("NOTFOUND")
       }
     });
   });
 }
 
+async function locateMsStoreInstall() {
+  const drives = await drivelist.list();
+  let mountPaths = drives.filter(drive => drive.isSystem)
+      .flatMap(drive => drive.mountpoints)
+      .map(mountPoint => mountPoint.path)
+  for (let mountPath of new Set(mountPaths)) {
+    const installPath = path.join(mountPath, "/XboxGames/Payday 3/Content")
+    if (fs.existsSync(installPath)) return installPath
+  }
+
+  throw new Error("NOT_FOUND")
+}
+
 function locateEpicInstall() {
   return new Promise((resolve, reject) => {
-    const epicManifestPath = "C:/ProgramData/Epic/EpicGamesLauncher/Data/Manifests";
+    const epicManifestPath = "C:/ProgramData/Epic/EpicGamesLauncher/Data/Manifests"
     if (!fs.existsSync(epicManifestPath))
-      reject("NOTFOUND");
+      reject("NOTFOUND")
 
-    var manifests = fs.readdirSync(epicManifestPath);
+    const manifests = fs.readdirSync(epicManifestPath)
 
-    for (var manifest in manifests) {
-      if (!manifests[manifest].endsWith(".item"))
+    for (const manifest of manifests) {
+      if (!manifest.endsWith(".item"))
         continue;
 
-      var manifestJson = JSON.parse(fs.readFileSync(path.join(epicManifestPath, manifests[manifest])));
+      const manifestJson = JSON.parse(fs.readFileSync(path.join(epicManifestPath, manifest)));
 
       // TODO: change "PAYDAY 3" to whatever the game uses to identify itself
       if (manifestJson["DisplayName"] === "PAYDAY 3") {
-        resolve(manifestJson["InstallLocation"]);
+        resolve(manifestJson["InstallLocation"])
         return;
       }
     }
 
-    reject("NOTFOUND");
+    reject("NOTFOUND")
   })
 }
 
 function resolveInstall() {
   return locateSteamInstall()
       .catch(() => {
-        console.log('Steam installation not found or encountered an error. Falling back to Epic.');
-        return locateEpicInstall()
+        console.log('Steam installation not found or encountered an error. Falling back to Xbox.')
+        return locateMsStoreInstall()
             .catch(() => {
-              console.error('Epic installation not found or encountered an error.');
-              throw new Error('No game installation not found.');
-            });
-      });
+              console.error('Xbox installation not found or encountered an error. Falling back to Epic')
+              return locateEpicInstall()
+                  .catch(() => {
+                    console.error('Epic installation not found or encountered an error.')
+                    throw new Error('No game installation not found.')
+                  })
+            })
+      })
 }
 
 module.exports = {

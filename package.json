@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.5.10",
+    "drivelist": "^11.1.0",
     "electron-squirrel-startup": "^1.0.0",
     "fs-extra": "^11.1.1",
     "octokit": "^3.1.0",
