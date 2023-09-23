@@ -3,8 +3,9 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const config = require('./config')
+const {dialog, app} = require("electron");
 
-class InstallPackage {
+class PD3ModInstallPackage {
     constructor(zip) {
         this.zip = zip
 
@@ -40,8 +41,27 @@ class InstallPackage {
             this.zip.extractEntryTo(ue4ssDlls, path.join(modPath, "dlls"), false, true, false, null)
         if (pak)
             this.zip.extractEntryTo(pak, path.join(modPath, pakPath), false, true, false, null)
+
+        // TODO: enable UE4SS mod in mods.txt
     }
 }
+
+class PakModInstallPackage {
+    constructor(pakPath) {
+        this.pakPath = pakPath
+    }
+
+    async install() {
+        // TODO: auto generate meta:
+        //       1. id pak name sanitized
+        //       2. version (0.0.0)
+        //       3. environment (*)
+        //       4. schemaVersion (1)
+
+        // TODO: copy pak to game
+    }
+}
+
 
 function getCaseInsensitiveEntry(zip, path) {
     for (let entry of zip.getEntries()) {
@@ -52,11 +72,41 @@ function getCaseInsensitiveEntry(zip, path) {
 }
 
 function fromPath(packagePath) {
+    if (packagePath.toLowerCase().endsWith(".pak")) {
+        return new PakModInstallPackage(packagePath)
+    }
+
     const zip = new AdmZip(packagePath)
-    return new InstallPackage(zip)
+    return new PD3ModInstallPackage(zip)
+}
+
+function installAllPackages(packagePaths) {
+    let failedInstalls = [];
+
+    let packagePromises = packagePaths.map(packagePath => {
+        let installPackage = fromPath(packagePath)
+        return installPackage.install()
+            .catch(reason => failedInstalls.push({packagePath: packagePath, error: reason}));
+    });
+
+    Promise.all(packagePromises)
+        .finally(() => {
+            if (failedInstalls.length === 0) {
+                dialog.showMessageBox(null, {
+                    title: "All mods installed successfully",
+                    message: `Successfully installed all mods`
+                }).then(() => app.quit());
+            } else {
+                let failedModErrors = failedInstalls
+                    .map(install => `${install.packagePath}: ${install.error}`)
+                    .join('\n');
+                dialog.showErrorBox("Failed to install mod packages", "Failed to install mod(s):\n" + failedModErrors);
+                app.quit()
+            }
+        });
 }
 
 module.exports = {
-    InstallPackage,
-    fromPath
+    InstallPackage: PD3ModInstallPackage,
+    installAllPackages
 }
