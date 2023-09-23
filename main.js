@@ -26,22 +26,21 @@ require('update-electron-app')()
 let mainWindow;
 
 app.on('ready', () => {
-    // Check if the app was launched with the install/uninstall arguments
-    const isInstall = process.argv.includes('--squirrel-install');
-    const isUninstall = process.argv.includes('--squirrel-uninstall');
     const installPackagesPaths = process.argv.slice(1).filter(v => v !== '.' && !v.startsWith('--'));
 
     loadConfig();
 
-    resolveInstall()
-        .then(result => {
-            console.log("Install dir:", result);
-            setConfigValue("gameDirectory", result);
-            saveConfig();
-        })
-        .catch(error => {
-            console.error("Error:", error);
-        });
+    if (!getConfigValue("gameDirectory")) {
+        resolveInstall()
+            .then(result => {
+                console.log("Install dir:", result);
+                setConfigValue("gameDirectory", result);
+                saveConfig();
+            })
+            .catch(error => {
+                console.error("Could not resolve game install", error);
+            });
+    }
 
     if (installPackagesPaths.length > 0) {
         modParser.installAllPackages(packagePaths)
