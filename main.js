@@ -5,7 +5,7 @@ function handleStartupEvent() {
     // Custom installer logic
     const cmd = process.argv[1];
     if (cmd === '--squirrel-install' || cmd === '--squirrel-updated') {
-        setup.installShellExtension(app.getAppPath());
+        setup.installShellExtension(app.getPath("exe"));
     } else if (cmd === '--squirrel-uninstall') {
         setup.uninstallShellExtension();
     }

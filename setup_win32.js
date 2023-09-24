@@ -3,9 +3,8 @@ const regedit = require('winreg');
 
 const FILE_EXTENSION = '.pd3mod';
 
-function installShellExtension(appPath) {
+function installShellExtension(exePath) {
 	console.log(`Installing ${FILE_EXTENSION} shell extension`)
-	const exePath = path.resolve(appPath, 'moolahmodlauncher.exe');
 
 	const key = new regedit({
 		hive: regedit.HKCU,
@@ -13,7 +12,7 @@ function installShellExtension(appPath) {
 	});
 
 	key.create(() => {
-		key.set('', regedit.REG_SZ, 'MoolahModLauncher.' + FILE_EXTENSION, () => {
+		key.set('', regedit.REG_SZ, 'MoolahModLauncher' + FILE_EXTENSION, () => {
 
 			const key_icon = new regedit({
 				hive: regedit.HKCU,
