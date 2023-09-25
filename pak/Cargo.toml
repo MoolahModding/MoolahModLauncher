@@ -1,0 +1,13 @@
+[package]
+name = "pak"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+aes = "0.8.3"
+neon = { version = "0.10.1", features = ["promise-api", "napi-6", "channel-api", "neon-macros"], default-features = false }
+rayon = "1.8.0"
+repak = { git = "https://github.com/trumank/repak", version = "0.1.8" }

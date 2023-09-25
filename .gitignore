@@ -132,3 +132,6 @@ dist
 config.json
 
 .idea/
+
+index.node
+pak/target/
