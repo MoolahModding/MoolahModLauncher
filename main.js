@@ -1,5 +1,6 @@
-const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
-const setup = require('./setup_win32');
+const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron')
+
+const setup = require('./setup_win32')
 
 function handleStartupEvent() {
     // Custom installer logic
@@ -18,9 +19,10 @@ function handleStartupEvent() {
 if (handleStartupEvent()) return
 
 const path = require("node:path");
-const modParser = require('./mod_parser');
-const { loadConfig, saveConfig, setConfigValue, getConfigValue } = require('./config');
+const modParser = require('./mod_installer');
+const { loadConfig, saveConfig, setConfigValue, getConfigValue, getModsDirectory } = require('./config');
 const {resolveInstall} = require('./installlocators');
+const filewatcher = require('./filewatcher')
 
 require('update-electron-app')()
 
@@ -44,10 +46,11 @@ app.on('ready', () => {
     }
 
     if (installPackagesPaths.length > 0) {
-        modParser.installAllPackages(installPackagesPaths)
+        modParser.installAllPackages(installPackagesPaths, true)
     } else {
         ipcMain.on("launch-game", handleLaunchGame)
-        ipcMain.on("install-mods",  (event, packagePaths) => modParser.installAllPackages(packagePaths))
+        ipcMain.on("install-mods",  (event, packagePaths) => modParser.installAllPackages(packagePaths, false))
+
         mainWindow = new BrowserWindow({
             width: 800, height: 600,
             webPreferences: {
@@ -56,6 +59,9 @@ app.on('ready', () => {
             },
             icon: 'assets/img/modloader' // FIXME: svg not supported
         });
+        mainWindow.removeMenu()
+        filewatcher.initWatch(mainWindow.webContents).then(() => {})
+
         mainWindow.loadFile('assets/index.html')
             .catch(reason => console.error("Failed to load main window", reason));
     }
@@ -68,6 +74,7 @@ app.on('window-all-closed', () => {
 });
 
 function handleLaunchGame(event) {
+    // TODO: msstore/egs
     shell.openExternal("steam://rungameid/1272080//-fileopenlog", {logUsage: true}).then(() => {
             console.log("Game launched successfully!");
             app.quit();

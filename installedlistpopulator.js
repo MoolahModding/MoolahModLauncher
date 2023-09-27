@@ -4,8 +4,7 @@ const config = require('./config')
 
 function ILP_getInstalledMods() {
   config.loadConfig();
-  // TODO: when we add msstore support, support WinGDK and Win64
-  let installDir = path.join(config.getConfigValue("gameDirectory"), "PAYDAY3/Binaries/Win64/mods");
+  let installDir = config.getModsDirectory()
 
   if (!fs.existsSync(installDir)) {
     fs.mkdir(installDir)
