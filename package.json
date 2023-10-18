@@ -23,7 +23,9 @@
     "@electron-forge/cli": "^6.4.2",
     "@electron-forge/maker-squirrel": "^6.4.2",
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
-    "electron": "^26.2.0"
+    "@types/node": "^18.18.6",
+    "electron": "^26.2.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "adm-zip": "^0.5.10",
