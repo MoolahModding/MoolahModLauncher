@@ -1,5 +1,5 @@
-const { MWS_getCurrentModVersion } = require('./providers/modworkshop')
-const { GH_getLatestModVersion } = require('./providers/githubreleases')
+import { MWS_getCurrentModVersion } from './providers/modworkshop';
+import { GH_getLatestModVersion } from './providers/githubreleases';
 
 /***
  * Returns true if an update is available

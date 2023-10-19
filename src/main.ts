@@ -1,6 +1,6 @@
-const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron')
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 
-const setup = require('./setup_win32')
+import setup from './setup_win32';
 
 function handleStartupEvent() {
     // Custom installer logic
@@ -18,11 +18,11 @@ function handleStartupEvent() {
 // Exit early if we were invoked through Squirrel installer
 if (handleStartupEvent()) return
 
-const path = require("node:path");
-const modParser = require('./mod_installer');
-const { loadConfig, saveConfig, setConfigValue, getConfigValue, getModsDirectory } = require('./config');
-const {resolveInstall} = require('./installlocators');
-const filewatcher = require('./filewatcher')
+import path from "node:path";
+import modParser from './mod_installer';
+import { loadConfig, saveConfig, setConfigValue, getConfigValue, getModsDirectory } from './config';
+import { resolveInstall } from './installlocators';
+import filewatcher from './filewatcher';
 
 require('update-electron-app')()
 

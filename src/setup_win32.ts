@@ -1,5 +1,5 @@
-const path = require('path');
-const regedit = require('winreg');
+import path from 'path';
+import regedit from 'winreg';
 
 const FILE_EXTENSION = '.pd3mod';
 

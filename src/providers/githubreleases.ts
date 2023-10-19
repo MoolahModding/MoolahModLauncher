@@ -1,4 +1,4 @@
-const { Octokit } = require('octokit');
+import { Octokit } from 'octokit';
 
 const octokit = new Octokit();
 

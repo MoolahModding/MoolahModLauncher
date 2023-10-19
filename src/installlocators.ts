@@ -1,7 +1,7 @@
-const fs = require('node:fs');
-const path = require('node:path');
-const regedit = require('winreg');
-const drivelist = require('drivelist');
+import fs from 'node:fs';
+import path from 'node:path';
+import regedit from 'winreg';
+import drivelist from 'drivelist';
 
 function locateSteamInstall() {
   return new Promise((resolve, reject) => {

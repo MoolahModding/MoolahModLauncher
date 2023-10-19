@@ -1,7 +1,7 @@
-const {contextBridge, ipcRenderer} = require('electron');
+import { contextBridge, ipcRenderer } from 'electron';
 
-const config = require('./config');
-const installedpopulator = require('./installedlistpopulator')
+import config from './config';
+import installedpopulator from '../installedlistpopulator';
 
 contextBridge.exposeInMainWorld("config", config);
 contextBridge.exposeInMainWorld("installedpopulator", installedpopulator);

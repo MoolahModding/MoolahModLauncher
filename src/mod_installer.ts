@@ -1,12 +1,12 @@
-const AdmZip = require('adm-zip');
-const fs = require('fs-extra');
-const path = require('path');
-const toposort = require('toposort')
-const {globSync} = require('glob')
+import AdmZip from 'adm-zip';
+import fs from 'fs-extra';
+import path from 'path';
+import toposort from 'toposort';
+import { globSync } from 'glob';
 
-const config = require('./config')
-const {dialog, app} = require("electron");
-const {getModsDirectory} = require("./config");
+import config from './config';
+import { dialog, app } from "electron";
+import { getModsDirectory } from "./config";
 
 class PD3ModInstallPackage {
     constructor(zip) {

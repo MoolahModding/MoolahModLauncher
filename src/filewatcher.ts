@@ -1,6 +1,6 @@
-const path = require("path")
-const {getModsDirectory} = require("./config")
-const chokidar = require("chokidar")
+import path from "path"
+import { getModsDirectory } from "./config"
+import chokidar from "chokidar"
 
 let watcher = null
 
