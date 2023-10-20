@@ -1,29 +1,31 @@
-import { MWS_getCurrentModVersion } from './providers/modworkshop';
-import { GH_getLatestModVersion } from './providers/githubreleases';
+import { getCurrentModVersionByMWS } from './providers/modworkshop'
+import { getLatestModVersionByGitHub } from './providers/githubreleases'
+
+// TODO: refactor
 
 /***
  * Returns true if an update is available
  * Returns false if there isn't
  */
-async function checkForModUpdate(meta) {
+async function checkForModUpdate(meta: any) {
   if (!meta["updateProvider"]) {
-    return false;
+    return false
   }
 
-  let latest = null;
+  let latest = null
   switch(meta["updateProvider"]["type"].toLowerCase()) {
     case "modworkshop":
-      latest = await MWS_getCurrentModVersion(meta["updateProvider"]["id"]);
-      break;
+      latest = await getCurrentModVersionByMWS(meta["updateProvider"]["id"])
+      break
     case "githubreleases":
-      latest = await GH_getLatestModVersion(meta["updateProvider"]["repository"]);
-      break;
+      latest = await getLatestModVersionByGitHub(meta["updateProvider"]["repository"])
+      break
   }
 
   // TODO: strip prefix such as v1.0.0 -> 1.0.0
   // TODO: check with semver instead
   if (meta["version"] !== latest) {
-    return true;
+    return true
   }
 }
 

@@ -1,39 +1,37 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import config from './config';
+import { existsSync, mkdirSync, readdirSync, lstatSync, readFileSync } from 'node:fs'
+import path from 'node:path'
+import { getModsDirectory } from './config'
 
-function ILP_getInstalledMods() {
-  config.loadConfig();
-  let installDir = config.getModsDirectory()
+// TODO: refactor
+// TODO: consider using fs/promise
 
-  if (!fs.existsSync(installDir)) {
-    fs.mkdir(installDir)
+export function ILP_getInstalledMods() {
+  const installDir = getModsDirectory()
+
+  if (!existsSync(installDir)) {
+    mkdirSync(installDir)
   }
 
-  let mods = fs.readdirSync(installDir);
+  const mods = readdirSync(installDir)
 
-  let finalMods = [];
+  let finalMods = []
 
   for (let mod of mods) {
-    if (!fs.lstatSync(path.join(installDir, mod)).isDirectory()) {
-      continue;
+    if (!lstatSync(path.join(installDir, mod)).isDirectory()) {
+      continue
     }
-    if (!fs.existsSync(path.join(installDir, mod, "pd3mod.json"))) {
-      continue;
+    if (!existsSync(path.join(installDir, mod, "pd3mod.json"))) {
+      continue
     }
     try {
-      let meta = JSON.parse(fs.readFileSync(path.join(installDir, mod, "pd3mod.json")));
-      meta["finalIconPath"] = "file:///" + path.join(installDir, mod, meta["icon"]);
-      console.log(meta["finalIconPath"]);
+      let meta = JSON.parse(readFileSync(path.join(installDir, mod, "pd3mod.json")).toString())
+      meta["finalIconPath"] = "file:///" + path.join(installDir, mod, meta["icon"])
+      console.log(meta["finalIconPath"])
       finalMods.push(meta)
     } catch (e) {
-      console.warn("Mod: " + mod + " could not be read from filesystem: " + e.toString());
+      console.warn("Mod: " + mod + " could not be read from filesystem: " + e)
     }
   }
 
-  return finalMods;
+  return finalMods
 }
-
-module.exports = {
-  ILP_getInstalledMods
-};

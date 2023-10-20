@@ -1,12 +1,13 @@
-import AdmZip from 'adm-zip';
-import fs from 'fs-extra';
-import path from 'path';
-import toposort from 'toposort';
-import { globSync } from 'glob';
+import AdmZip from 'adm-zip'
+import fs from 'fs-extra'
+import path from 'node:path'
+import toposort from 'toposort'
+import { globSync } from 'glob'
 
-import config from './config';
-import { dialog, app } from "electron";
-import { getModsDirectory } from "./config";
+import { config, getModsDirectory } from './config'
+import { dialog, app } from "electron"
+
+// TODO: refactor
 
 class PD3ModInstallPackage {
     constructor(zip) {
@@ -64,9 +65,9 @@ class PD3ModInstallPackage {
             }
         }
 
-        lines.splice(newIndex, 0, `${id} : 1`);
-        const newContent = lines.join('\n');
-        await fs.writeFile(path, newContent);
+        lines.splice(newIndex, 0, `${id} : 1`)
+        const newContent = lines.join('\n')
+        await fs.writeFile(path, newContent)
     }
 }
 
@@ -78,7 +79,7 @@ class PakModInstallPackage {
     async install() {
         const gamePath = config.getConfigValue("gameDirectory")
         const id = this.#createIdFromPackagePath(this.packagePath)
-        const modDirPath = path.join(config.getModsDirectory(), id) // FIXME: handle WinGDK
+        const modDirPath = path.join(getModsDirectory(), id) // FIXME: handle WinGDK
         const pakDirPath = path.join(gamePath, `PAYDAY3/Content/Paks/~mods/0000-${id}`)
 
         await fs.ensureDir(modDirPath)
@@ -90,12 +91,12 @@ class PakModInstallPackage {
             version: '0.0.0',
             environment: '*',
             schemaVersion: 1,
-        };
+        }
 
-        const modMetaStr = JSON.stringify(modMeta, null, 2);
+        const modMetaStr = JSON.stringify(modMeta, null, 2)
 
         // Write to the file
-        await fs.writeFile(path.join(modDirPath, 'pd3mod.json'), modMetaStr);
+        await fs.writeFile(path.join(modDirPath, 'pd3mod.json'), modMetaStr)
         const pakDestinationPath = path.join(pakDirPath, path.basename(this.packagePath))
         await fs.copy(this.packagePath, pakDestinationPath)
     }
@@ -113,9 +114,9 @@ class PakModInstallPackage {
 
         // Ensure string starts with [a-z]
         if (/^[a-z]/.test(id)) {
-            id = id.replace(/^[^a-z]+/, '');
+            id = id.replace(/^[^a-z]+/, '')
         } else {
-            id = 'z' + id;
+            id = 'z' + id
         }
 
         id = id.substring(0, 64)
@@ -141,9 +142,9 @@ function fromPath(packagePath) {
 }
 
 function resolveLoadOrder() {
-    nodes = [] // All mod ids
-    edges = [] // Dependencies between mod ids
-    metaFiles = globSync(path.join(config.getModsDirectory(), "*/pd3mod.json"), {windowsPathsNoEscape: true})
+    const nodes = [] // All mod ids
+    const edges = [] // Dependencies between mod ids
+    const metaFiles = globSync(path.join(getModsDirectory(), "*/pd3mod.json"), {windowsPathsNoEscape: true})
 
     for (let metaFile of metaFiles) {
         const meta = JSON.parse(fs.readFileSync(metaFile))
@@ -163,14 +164,14 @@ function updateLoadOrder() {
     // TODO: update mods.txt and pak dirs
 }
 
-function installAllPackages(packagePaths, quitOnComplete) {
-    let failedInstalls = [];
+export function installAllPackages(packagePaths, quitOnComplete) {
+    let failedInstalls = []
 
     let packagePromises = packagePaths.map(packagePath => {
         let installPackage = fromPath(packagePath)
         return installPackage.install()
-            .catch(reason => failedInstalls.push({packagePath: packagePath, error: reason}));
-    });
+            .catch(reason => failedInstalls.push({packagePath: packagePath, error: reason}))
+    })
 
     Promise.all(packagePromises)
         .finally(() => {
@@ -181,17 +182,13 @@ function installAllPackages(packagePaths, quitOnComplete) {
                     message: `Successfully installed all mods`
                 }).then(() => {
                     if (quitOnComplete) app.quit()
-                });
+                })
             } else {
                 let failedModErrors = failedInstalls
                     .map(install => `${install.packagePath}: ${install.error}`)
-                    .join('\n');
-                dialog.showErrorBox("Failed to install mod packages", "Failed to install mod(s):\n" + failedModErrors);
+                    .join('\n')
+                dialog.showErrorBox("Failed to install mod packages", "Failed to install mod(s):\n" + failedModErrors)
                 if (quitOnComplete) app.quit()
             }
-        });
-}
-
-module.exports = {
-    installAllPackages
+        })
 }

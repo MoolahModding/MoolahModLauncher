@@ -1,15 +1,7 @@
-async function getCurrentModVersion(id) {
-  var response = await fetch({
-    url: `https://api.modworkshop.net/mods/${id}/version`,
-    method: "GET"
-  });
+export async function getCurrentModVersionByMWS(id: string) {
+  var response = await fetch(`https://api.modworkshop.net/mods/${id}/version`)
 
-  return response.text();
+  return response.text()
 }
 
-function getLatestVersionDownload(id) {}
-
-module.exports = {
-  MWS_getCurrentModVersion: getCurrentModVersion,
-  MWS_getLatestVersionDownload: getLatestVersionDownload
-}
+export function getLatestVersionDownload(id: string) {}

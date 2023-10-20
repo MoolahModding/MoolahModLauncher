@@ -1,59 +1,55 @@
-import path from 'path';
-import regedit from 'winreg';
+import regedit from 'winreg'
 
-const FILE_EXTENSION = '.pd3mod';
+const FILE_EXTENSION = '.pd3mod'
 
-function installShellExtension(exePath) {
-	console.log(`Installing ${FILE_EXTENSION} shell extension`)
+// TODO: refactor
 
-	const key = new regedit({
-		hive: regedit.HKCU,
-		key: '\\Software\\Classes\\' + FILE_EXTENSION
-	});
+export function installShellExtension(exePath: string) {
+  console.log(`Installing ${FILE_EXTENSION} shell extension`)
 
-	key.create(() => {
-		key.set('', regedit.REG_SZ, 'MoolahModLauncher' + FILE_EXTENSION, () => {
+  const key = new regedit({
+    hive: regedit.HKCU,
+    key: '\\Software\\Classes\\' + FILE_EXTENSION
+  })
 
-			const key_icon = new regedit({
-				hive: regedit.HKCU,
-				key: '\\Software\\Classes\\' + FILE_EXTENSION + '\\DefaultIcon'
-			});
+  key.create(() => {
+    key.set('', regedit.REG_SZ, 'MoolahModLauncher' + FILE_EXTENSION, () => {
 
-			key_icon.create(() => {
-				key_icon.set('', regedit.REG_SZ, `"${exePath}",0`, () => {
+      const key_icon = new regedit({
+        hive: regedit.HKCU,
+        key: '\\Software\\Classes\\' + FILE_EXTENSION + '\\DefaultIcon'
+      })
 
-					const key_shell = new regedit({
-						hive: regedit.HKCU,
-						key: '\\Software\\Classes\\' + FILE_EXTENSION + '\\shell\\open\\command'
-					});
+      key_icon.create(() => {
+        key_icon.set('', regedit.REG_SZ, `"${exePath}",0`, () => {
 
-					key_shell.set('', regedit.REG_SZ, `"${exePath}" "%1"`, () => {
-						console.log(`File extension for ${FILE_EXTENSION} installed.`);
-					});
-				});
-			});
-		});
-	});
+          const key_shell = new regedit({
+            hive: regedit.HKCU,
+            key: '\\Software\\Classes\\' + FILE_EXTENSION + '\\shell\\open\\command'
+          })
+
+          key_shell.set('', regedit.REG_SZ, `"${exePath}" "%1"`, () => {
+            console.log(`File extension for ${FILE_EXTENSION} installed.`)
+          })
+        })
+      })
+    })
+  })
 }
 
-function uninstallShellExtension() {
-	console.log(`Uninstalling ${FILE_EXTENSION} shell extension`)
+export function uninstallShellExtension() {
+  console.log(`Uninstalling ${FILE_EXTENSION} shell extension`)
 
-	const key = new regedit({
-		hive: regedit.HKCU,
-		key: '\\Software\\Classes\\' + FILE_EXTENSION
-	});
+  const key = new regedit({
+    hive: regedit.HKCU,
+    key: '\\Software\\Classes\\' + FILE_EXTENSION
+  })
 
-	key.destroy(err => {
-        if (err) {
-            console.error(`Failed to uninstall ${FILE_EXTENSION} file extension.`);
-        } else {
-            console.log(`File extension for ${FILE_EXTENSION} uninstalled.`);
-        }
-	});
+  key.destroy(err => {
+    if (err) {
+        console.error(`Failed to uninstall ${FILE_EXTENSION} file extension.`)
+    } else {
+        console.log(`File extension for ${FILE_EXTENSION} uninstalled.`)
+    }
+  })
 }
-
-module.exports = {
-	installShellExtension,
-	uninstallShellExtension,
-};

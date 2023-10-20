@@ -1,34 +1,31 @@
-import path from "path"
+import path from "node:path"
 import { getModsDirectory } from "./config"
 import chokidar from "chokidar"
+import type { WebContents } from "electron"
 
-let watcher = null
+const watchPath = path.join(getModsDirectory())
+const watcher = chokidar.watch(watchPath)
 
-async function initWatcher(webContents) {
-    const watchPath = path.join(getModsDirectory())
+// TODO: refactor
 
-    // Function might be called more than once if mod directory changes. If so, close existing watcher first.
-    if (watcher) {
-        await watcher.close()
+export async function initWatcher(webContents: WebContents) {
+  // Function might be called more than once if mod directory changes. If so, close existing watcher first.
+  if (watcher) {
+      await watcher.close()
+  }
+
+  watcher.on('all', (eventName, eventPath) => {
+    if (path.basename(eventPath) !== 'pd3mod.json') return
+
+    switch (eventName) {
+      case "add":
+        webContents.send("mod-added", eventPath)
+        break
+      case "change":
+        webContents.send("mod-changed", eventPath)
+        break
+      case "unlink":
+        webContents.send("mod-removed", eventPath)
     }
-
-    watcher = chokidar.watch(watchPath)
-        .on('all', (eventName, eventPath) => {
-            if (path.basename(eventPath) !== 'pd3mod.json') return
-
-            switch (eventName) {
-                case "add":
-                    webContents.send("mod-added", eventPath)
-                    break
-                case "change":
-                    webContents.send("mod-changed", eventPath)
-                    break
-                case "unlink":
-                    webContents.send("mod-removed", eventPath)
-            }
-        })
-}
-
-module.exports = {
-    initWatch: initWatcher
+  })
 }

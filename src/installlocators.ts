@@ -1,7 +1,9 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import regedit from 'winreg';
-import drivelist from 'drivelist';
+import fs from 'node:fs'
+import path from 'node:path'
+import regedit from 'winreg'
+import drivelist from 'drivelist'
+
+// TODO: refactor
 
 function locateSteamInstall() {
   return new Promise((resolve, reject) => {
@@ -20,29 +22,29 @@ function locateSteamInstall() {
             console.error(err)
             reject("ERROR")
           } else {
-            let steamLocation = null;
+            let steamLocation = null
             for (let i = 0; i < items.length; i++) {
               if (items[i].name === "InstallLocation") {
                 steamLocation = items[i].value
                 console.log(`InstallLocation: ${steamLocation}`)
                 resolve(steamLocation)
-                return;
+                return
               }
             }
             console.log('InstallLocation not found in the registry key.')
             reject("NOTFOUND")
           }
-        });
+        })
       } else {
         console.log('Registry key not found.')
         reject("NOTFOUND")
       }
-    });
-  });
+    })
+  })
 }
 
 async function locateMsStoreInstall() {
-  const drives = await drivelist.list();
+  const drives = await drivelist.list()
   let mountPaths = drives.filter(drive => drive.isSystem)
       .flatMap(drive => drive.mountpoints)
       .map(mountPoint => mountPoint.path)
@@ -64,14 +66,14 @@ function locateEpicInstall() {
 
     for (const manifest of manifests) {
       if (!manifest.endsWith(".item"))
-        continue;
+        continue
 
-      const manifestJson = JSON.parse(fs.readFileSync(path.join(epicManifestPath, manifest)));
+      const manifestJson = JSON.parse(fs.readFileSync(path.join(epicManifestPath, manifest)).toString())
 
       // TODO: change "PAYDAY 3" to whatever the game uses to identify itself
       if (manifestJson["DisplayName"] === "PAYDAY 3") {
         resolve(manifestJson["InstallLocation"])
-        return;
+        return
       }
     }
 
@@ -79,22 +81,18 @@ function locateEpicInstall() {
   })
 }
 
-function resolveInstall() {
+export function resolveInstall() {
   return locateSteamInstall()
-      .catch(() => {
-        console.log('Steam installation not found or encountered an error. Falling back to Xbox.')
-        return locateMsStoreInstall()
+    .catch(() => {
+      console.log('Steam installation not found or encountered an error. Falling back to Xbox.')
+      return locateMsStoreInstall()
+        .catch(() => {
+          console.error('Xbox installation not found or encountered an error. Falling back to Epic')
+          return locateEpicInstall()
             .catch(() => {
-              console.error('Xbox installation not found or encountered an error. Falling back to Epic')
-              return locateEpicInstall()
-                  .catch(() => {
-                    console.error('Epic installation not found or encountered an error.')
-                    throw new Error('No game installation not found.')
-                  })
+              console.error('Epic installation not found or encountered an error.')
+              throw new Error('No game installation not found.')
             })
-      })
-}
-
-module.exports = {
-  resolveInstall
+        })
+    })
 }
