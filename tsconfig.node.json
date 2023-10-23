@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "esModuleInterop": true,
+    "moduleResolution": "nodenext"
+  },
+  "include": [
+    "forge.config.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
