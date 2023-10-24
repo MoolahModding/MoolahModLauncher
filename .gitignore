@@ -132,3 +132,6 @@ dist
 config.json
 
 .idea/
+
+# @electron-forge/plugin-webpack output
+.webpack/
