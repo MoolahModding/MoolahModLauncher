@@ -7,7 +7,7 @@ import { globSync } from 'glob'
 import { config, getModsDirectory } from './config'
 import { dialog, app } from "electron"
 
-// TODO: refactor
+// TODO: refactor, add types
 
 class PD3ModInstallPackage {
     constructor(zip) {

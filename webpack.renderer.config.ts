@@ -12,6 +12,12 @@ const rendererConfig: Configuration = {
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
   },
+  // ! prevent `UnhandledSchemeError` ref: https://github.com/webpack/webpack/issues/13290
+  externals: {
+    "node:fs": {},
+    "node:process": {},
+    "node:path": {}
+  }
 }
 
 export { rendererConfig }

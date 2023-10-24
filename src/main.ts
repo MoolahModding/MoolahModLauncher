@@ -1,4 +1,3 @@
-import path from "node:path"
 import { exit } from "node:process"
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 
@@ -9,6 +8,9 @@ import { installShellExtension, uninstallShellExtension } from './setup_win32'
 import { config } from "./config"
 
 // TODO: refactor
+
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 
 function handleStartupEvent() {
     // Custom installer logic
@@ -54,16 +56,15 @@ app.on('ready', () => {
     mainWindow = new BrowserWindow({
       width: 800, height: 600,
       webPreferences: {
-          preload: path.join(__dirname, 'preload.js'),
-          nodeIntegration: true
+          preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+          nodeIntegration: false,
+          contextIsolation: true,
       },
       icon: 'assets/img/modloader' // FIXME: svg not supported
     })
+    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
     mainWindow.removeMenu()
     // filewatcher.initWatch(mainWindow.webContents).then(() => {})
-
-    mainWindow.loadFile('assets/index.html')
-      .catch(reason => console.error("Failed to load main window", reason))
   }
 })
 

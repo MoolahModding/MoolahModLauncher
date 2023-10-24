@@ -1,3 +1,5 @@
+import "./style.css"
+
 let launcherConfig = {
     launcherVersion: '1.0', // TODO: should come from package.json
     gameLaunchPossible: true, // TODO: unimplemented
