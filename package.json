@@ -2,7 +2,7 @@
   "name": "moolahmodlauncher",
   "version": "1.0.0",
   "description": "A simple mod launcher",
-  "main": "main.js",
+  "main": "./.webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
