@@ -1,6 +1,7 @@
 import { existsSync, writeFileSync, readFileSync } from "node:fs"
 import path from "node:path"
 import { exit } from "node:process"
+
 import type { ConfigType } from "./types/config"
 
 type ConfigKey = keyof ConfigType
@@ -45,7 +46,10 @@ class ConfigInternal {
     if (existsSync(confPath)) {
       try {
         const configFile = readFileSync(confPath)
-        return new ConfigInternal(JSON.parse(configFile.toString()) as ConfigType, confPath) // TODO: safe parse JSON
+        return new ConfigInternal(
+          JSON.parse(configFile.toString()) as ConfigType,
+          confPath
+        ) // TODO: safe parse JSON
       } catch (err) {
         console.error(err)
         exit(1)

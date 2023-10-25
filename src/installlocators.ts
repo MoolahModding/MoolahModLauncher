@@ -1,7 +1,8 @@
 import fs from "node:fs"
 import path from "node:path"
-import regedit from "winreg"
+
 import drivelist from "drivelist"
+import regedit from "winreg"
 
 // TODO: refactor
 

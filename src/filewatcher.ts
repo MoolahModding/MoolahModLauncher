@@ -1,7 +1,9 @@
-import path from "node:path"
-import { getModsDirectory } from "./config"
-import chokidar from "chokidar"
 import type { WebContents } from "electron"
+import path from "node:path"
+
+import chokidar from "chokidar"
+
+import { getModsDirectory } from "./config"
 
 const watchPath = path.join(getModsDirectory())
 const watcher = chokidar.watch(watchPath)

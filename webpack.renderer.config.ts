@@ -1,6 +1,7 @@
-import { Configuration } from "webpack"
-import { rendererRules } from "./webpack.rules"
+import type { Configuration } from "webpack"
+
 import { commonPlugins } from "./webpack.plugins"
+import { rendererRules } from "./webpack.rules"
 
 const rendererConfig: Configuration = {
   // XXX: should add `optimization` key for production?
@@ -10,14 +11,14 @@ const rendererConfig: Configuration = {
   },
   plugins: commonPlugins,
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
+    extensions: [".js", ".ts", ".jsx", ".tsx", ".css"],
   },
   // ! prevent `UnhandledSchemeError` ref: https://github.com/webpack/webpack/issues/13290
   externals: {
     "node:fs": {},
     "node:process": {},
-    "node:path": {}
-  }
+    "node:path": {},
+  },
 }
 
 export { rendererConfig }

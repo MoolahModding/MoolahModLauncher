@@ -2,7 +2,7 @@ import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
 import type { WebpackPluginInstance } from "webpack"
 
 const commonPlugins: WebpackPluginInstance[] = [
-  new ForkTsCheckerWebpackPlugin()
+  new ForkTsCheckerWebpackPlugin(),
 ]
 
 export { commonPlugins }

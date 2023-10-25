@@ -1,5 +1,5 @@
-import { getCurrentModVersionByMWS } from "./providers/modworkshop"
 import { getLatestModVersionByGitHub } from "./providers/githubreleases"
+import { getCurrentModVersionByMWS } from "./providers/modworkshop"
 
 // TODO: refactor
 

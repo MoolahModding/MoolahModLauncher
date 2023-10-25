@@ -1,11 +1,11 @@
-import { exit } from "node:process"
 import { app, BrowserWindow, dialog, ipcMain, shell } from "electron"
+import { exit } from "node:process"
 
 // import filewatcher from './filewatcher'
-import { installAllPackages } from "./mod_installer"
-import { resolveInstall } from "./installlocators"
-import { installShellExtension, uninstallShellExtension } from "./setup_win32"
 import { config } from "./config"
+import { resolveInstall } from "./installlocators"
+import { installAllPackages } from "./mod_installer"
+import { installShellExtension, uninstallShellExtension } from "./setup_win32"
 
 // TODO: refactor
 

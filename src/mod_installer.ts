@@ -1,11 +1,13 @@
+import { dialog, app } from "electron"
+import path from "node:path"
+
 import AdmZip from "adm-zip"
 import fs from "fs-extra"
-import path from "node:path"
-import toposort from "toposort"
 import { globSync } from "glob"
+import toposort from "toposort"
 
 import { config, getModsDirectory } from "./config"
-import { dialog, app } from "electron"
+
 
 // TODO: refactor, add types
 

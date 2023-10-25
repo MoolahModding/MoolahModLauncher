@@ -8,14 +8,14 @@ const mainConfig: Configuration = {
     rules: commonRules,
   },
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+    extensions: [".js", ".ts", ".jsx", ".tsx", ".css", ".json"],
   },
   // ! prevent `UnhandledSchemeError` ref: https://github.com/webpack/webpack/issues/13290
   externals: {
     "node:fs": {},
     "node:process": {},
-    "node:path": {}
-  }
+    "node:path": {},
+  },
 }
 
 export { mainConfig }
