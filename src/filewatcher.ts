@@ -11,11 +11,11 @@ const watcher = chokidar.watch(watchPath)
 export async function initWatcher(webContents: WebContents) {
   // Function might be called more than once if mod directory changes. If so, close existing watcher first.
   if (watcher) {
-      await watcher.close()
+    await watcher.close()
   }
 
-  watcher.on('all', (eventName, eventPath) => {
-    if (path.basename(eventPath) !== 'pd3mod.json') return
+  watcher.on("all", (eventName, eventPath) => {
+    if (path.basename(eventPath) !== "pd3mod.json") return
 
     switch (eventName) {
       case "add":

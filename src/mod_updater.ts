@@ -1,5 +1,5 @@
-import { getCurrentModVersionByMWS } from './providers/modworkshop'
-import { getLatestModVersionByGitHub } from './providers/githubreleases'
+import { getCurrentModVersionByMWS } from "./providers/modworkshop"
+import { getLatestModVersionByGitHub } from "./providers/githubreleases"
 
 // TODO: refactor
 
@@ -13,12 +13,14 @@ async function checkForModUpdate(meta: any) {
   }
 
   let latest = null
-  switch(meta["updateProvider"]["type"].toLowerCase()) {
+  switch (meta["updateProvider"]["type"].toLowerCase()) {
     case "modworkshop":
       latest = await getCurrentModVersionByMWS(meta["updateProvider"]["id"])
       break
     case "githubreleases":
-      latest = await getLatestModVersionByGitHub(meta["updateProvider"]["repository"])
+      latest = await getLatestModVersionByGitHub(
+        meta["updateProvider"]["repository"]
+      )
       break
   }
 
@@ -30,5 +32,5 @@ async function checkForModUpdate(meta: any) {
 }
 
 module.exports = {
-  checkForModUpdate
+  checkForModUpdate,
 }

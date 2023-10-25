@@ -1,10 +1,12 @@
-import { Octokit } from 'octokit'
+import { Octokit } from "octokit"
 
 const octokit = new Octokit()
 
 function parseGitHubRepositoryURL(urlOrSlug: string) {
   // Regular expression to extract the owner and repo from the URL or slug
-  const match = urlOrSlug.match(/(?:github\.com\/|^)(?<owner>[a-zA-Z0-9\.\-\_]+)\/(?<repo>[a-zA-Z0-9\.\-\_]+)$/)
+  const match = urlOrSlug.match(
+    /(?:github\.com\/|^)(?<owner>[a-zA-Z0-9.\-_]+)\/(?<repo>[a-zA-Z0-9.\-_]+)$/
+  )
 
   if (match && match.length === 3) {
     return match.groups

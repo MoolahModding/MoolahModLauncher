@@ -1,6 +1,12 @@
-import { existsSync, mkdirSync, readdirSync, lstatSync, readFileSync } from 'node:fs'
-import path from 'node:path'
-import { getModsDirectory } from './config'
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  lstatSync,
+  readFileSync,
+} from "node:fs"
+import path from "node:path"
+import { getModsDirectory } from "./config"
 
 // TODO: refactor
 // TODO: consider using fs/promise
@@ -14,9 +20,9 @@ export function ILP_getInstalledMods() {
 
   const mods = readdirSync(installDir)
 
-  let finalMods = []
+  const finalMods = []
 
-  for (let mod of mods) {
+  for (const mod of mods) {
     if (!lstatSync(path.join(installDir, mod)).isDirectory()) {
       continue
     }
@@ -24,8 +30,11 @@ export function ILP_getInstalledMods() {
       continue
     }
     try {
-      let meta = JSON.parse(readFileSync(path.join(installDir, mod, "pd3mod.json")).toString())
-      meta["finalIconPath"] = "file:///" + path.join(installDir, mod, meta["icon"])
+      const meta = JSON.parse(
+        readFileSync(path.join(installDir, mod, "pd3mod.json")).toString()
+      )
+      meta["finalIconPath"] =
+        "file:///" + path.join(installDir, mod, meta["icon"])
       console.log(meta["finalIconPath"])
       finalMods.push(meta)
     } catch (e) {
