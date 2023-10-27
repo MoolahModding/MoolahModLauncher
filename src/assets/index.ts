@@ -109,10 +109,7 @@ function saveSettings() {
   // nodejs and normal javascript have different instances of the config
   const keepOpen = document.getElementById("setKeepOpen") as HTMLInputElement
   config.setConfigValue("gameDirectory", "test") //document.getElementById("setGameDir").value);
-  config.setConfigValue(
-    "keepLauncherOpen",
-    keepOpen.checked
-  )
+  config.setConfigValue("keepLauncherOpen", keepOpen.checked)
 }
 
 function toggleSettingsPanel() {
@@ -358,8 +355,7 @@ function toggleMod(modItem: HTMLLIElement) {
     case "false":
       parentNode.setAttribute("installed", "true")
       modItem.setAttribute("ticked", "")
-      openPopup("Mod enabled", modName + " has been enabled."
-      , "ok")
+      openPopup("Mod enabled", modName + " has been enabled.", "ok")
       // CALL FUNCTION TO ENABLE MOD
       break
   }

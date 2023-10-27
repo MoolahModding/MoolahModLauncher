@@ -1,4 +1,3 @@
-
 import { MakerSquirrel } from "@electron-forge/maker-squirrel"
 import { MakerZIP } from "@electron-forge/maker-zip"
 import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives"

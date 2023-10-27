@@ -11,7 +11,6 @@ import toposort from "toposort"
 
 import { config, getModsDirectory } from "./config"
 
-
 // TODO: refactor, add types
 
 class PD3ModInstallPackage {
