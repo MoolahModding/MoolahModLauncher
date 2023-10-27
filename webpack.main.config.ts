@@ -12,9 +12,9 @@ const mainConfig: Configuration = {
   },
   // ! prevent `UnhandledSchemeError` ref: https://github.com/webpack/webpack/issues/13290
   externals: {
-    "node:fs": {},
-    "node:process": {},
-    "node:path": {},
+    "node:fs": "fs",
+    "node:process": "process",
+    "node:path": "path",
   },
 }
 

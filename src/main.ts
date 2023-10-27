@@ -29,18 +29,18 @@ if (handleStartupEvent()) exit(0)
 
 require("update-electron-app")()
 
-const mainWindow = new BrowserWindow({
-  width: 800,
-  height: 600,
-  webPreferences: {
-    preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-    nodeIntegration: false,
-    contextIsolation: true,
-  },
-  icon: "assets/img/modloader", // FIXME: svg not supported
-})
-
 app.on("ready", () => {
+  const mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+    icon: "assets/img/modloader.svg", // FIXME: svg not supported
+  })
+
   const installPackagesPaths = process.argv
     .slice(1)
     .filter((v) => v !== "." && !v.startsWith("--"))
