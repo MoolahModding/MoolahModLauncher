@@ -29,7 +29,7 @@ const config: ForgeConfig = {
         entryPoints: [
           {
             html: "./src/assets/index.html",
-            js: "./src/assets/index.js",
+            js: "./src/assets/index.ts",
             name: "main_window",
             preload: {
               js: "./src/preload.ts",
