@@ -7,43 +7,45 @@ const launcherConfig = {
   gameDirectory: "C:/Program Files (x86)/Steam/steamapps/common/PAYDAY 3", // TODO: should come from config
 }
 
-const mods = []
-let currentSelectedMod
+const mods: Array<HTMLLIElement | null> = []
+let currentSelectedMod: string
+
+const config = window.config
 
 window.onload = (e) => {
   loadSettings()
 }
 
-const modList = document.getElementById("modList")
-const modListContainer = document.getElementById("modlistContainer")
-const launcherVersion = document.getElementById("version")
+const modList = document.getElementById("modList") as HTMLUListElement
+const modListContainer = document.getElementById("modlistContainer")!
+const launcherVersion = document.getElementById("version")!
 
 const settings = {
-  launchBtn: document.getElementById("launchGame"),
-  gameVersion: document.getElementById("gameVersion"),
-  btn: document.querySelector('.settingsButton[icon="settings"]'),
-  panel: document.getElementById("settingsPanel"),
-  gamedir: document.getElementById("setGameDir"),
-  keepOpen: document.getElementById("setKeepOpen"),
+  launchBtn: document.getElementById("launchGame")!,
+  gameVersion: document.getElementById("gameVersion")!,
+  btn: document.querySelector('.settingsButton[icon="settings"]')!,
+  panel: document.getElementById("settingsPanel")!,
+  gamedir: document.getElementById("setGameDir") as HTMLInputElement,
+  keepOpen: document.getElementById("setKeepOpen") as HTMLInputElement,
 }
 const details = {
-  icon: document.getElementById("detailsModIcon"),
-  name: document.getElementById("detailsModName"),
-  version: document.getElementById("detailsModVersion"),
-  author: document.getElementById("detailsModAuthor"),
-  website: document.getElementById("detailsModWebsite"),
-  issues: document.getElementById("detailsModIssues"),
-  desc: document.getElementById("detailsModDesc"),
+  icon: document.getElementById("detailsModIcon") as HTMLImageElement,
+  name: document.getElementById("detailsModName")!,
+  version: document.getElementById("detailsModVersion")!,
+  author: document.getElementById("detailsModAuthor")!,
+  website: document.getElementById("detailsModWebsite") as HTMLAnchorElement,
+  issues: document.getElementById("detailsModIssues") as HTMLAnchorElement,
+  desc: document.getElementById("detailsModDesc")!,
 }
 const popup = {
-  popup: document.querySelector(".popup"),
-  header: document.getElementById("popupHeader"),
-  text: document.getElementById("popupText"),
+  popup: document.querySelector(".popup")!,
+  header: document.getElementById("popupHeader")!,
+  text: document.getElementById("popupText")!,
   btn: {
-    yes: document.querySelector('.popupButton[data-btn="yes"]'),
-    no: document.querySelector('.popupButton[data-btn="no"]'),
-    ok: document.querySelector('.popupButton[data-btn="ok"]'),
-    close: document.querySelector('.popupButton[data-btn="close"]'),
+    yes: document.querySelector('.popupButton[data-btn="yes"]')!,
+    no: document.querySelector('.popupButton[data-btn="no"]')!,
+    ok: document.querySelector('.popupButton[data-btn="ok"]')!,
+    close: document.querySelector('.popupButton[data-btn="close"]')!,
   },
 }
 
@@ -55,7 +57,7 @@ function updateSettings() {
       settings.launchBtn.removeAttribute("disabled")
       break
     case false:
-      settings.launchBtn.setAttribute("disabled", null)
+      settings.launchBtn.setAttribute("disabled", "")
       break
   }
 
@@ -96,23 +98,21 @@ function saveConfig() {
 }
 
 function loadSettings() {
-  window.config.loadConfig()
-  document.getElementById("setGameDir").value =
-    window.config.getConfigValue("gameDirectory")
-  document.getElementById("setKeepOpen").checked =
-    window.config.getConfigValue("keepLauncherOpen")
+  const gameDir = document.getElementById("setGameDir")! as HTMLInputElement
+  const keepOpen = document.getElementById("setKeepOpen")! as HTMLInputElement
+  gameDir.value = config.getConfigValue("gameDirectory")
+  keepOpen.checked = config.getConfigValue("keepLauncherOpen")
 }
 
 function saveSettings() {
   // Should always load the config before reading from it and save after writing, because
   // nodejs and normal javascript have different instances of the config
-  window.config.loadConfig()
-  window.config.setConfigValue("gameDirectory", "test") //document.getElementById("setGameDir").value);
-  window.config.setConfigValue(
+  const keepOpen = document.getElementById("setKeepOpen") as HTMLInputElement
+  config.setConfigValue("gameDirectory", "test") //document.getElementById("setGameDir").value);
+  config.setConfigValue(
     "keepLauncherOpen",
-    document.getElementById("setKeepOpen").checked
+    keepOpen.checked
   )
-  window.config.saveConfig()
 }
 
 function toggleSettingsPanel() {
@@ -122,22 +122,21 @@ function toggleSettingsPanel() {
 
 // example: createModItem('amog', 'Amogus Lootbags', 'Replaces Lootbags with amogus', '1.0.2', 'Lenny, Capcake', 'https://www.amongus.com', 'https://www.github.com/amogus', 'path to icon', true[if mod is enabled or not])
 function createModItem(
-  id,
-  name,
-  desc,
-  version,
-  author,
-  website,
-  issues,
-  icon,
-  active
+  id: string,
+  name: string,
+  desc: string,
+  version: string,
+  author: string,
+  website: string,
+  issues: string,
+  icon: string,
+  active: boolean
 ) {
   const modItem = document.createElement("li")
   const modInfo = document.createElement("span")
   const delBtn = document.createElement("button")
   const togBtn = document.createElement("button")
 
-  modItem
   modItem.classList.add("modItem")
   modItem.setAttribute("mod-id", id)
   modItem.setAttribute("mod-name", name)
@@ -155,13 +154,11 @@ function createModItem(
   modInfo.setAttribute("author", author)
   modItem.appendChild(modInfo)
 
-  delBtn
   delBtn.classList.add("modBtn")
   delBtn.setAttribute("icon", "delete")
   delBtn.setAttribute("onclick", "confirmDeleteMod(this)")
   modItem.appendChild(delBtn)
 
-  togBtn
   togBtn.classList.add("modBtn")
   togBtn.setAttribute("icon", "toggle")
   togBtn.setAttribute("onclick", "toggleMod(this)")
@@ -172,7 +169,7 @@ function createModItem(
   switch (active) {
     case true:
       modItem.setAttribute("installed", "true")
-      togBtn.setAttribute("ticked", null)
+      togBtn.setAttribute("ticked", "")
       break
     case false:
       modItem.setAttribute("installed", "false")
@@ -180,22 +177,22 @@ function createModItem(
       break
   }
 
-  modItem.setAttribute("mod-index", mods.length)
+  modItem.setAttribute("mod-index", mods.length.toString())
   mods.push(modItem)
 
   console.log(mods)
 }
 
-function openMod(selectedMod) {
+function openMod(selectedMod: HTMLLIElement) {
   const mod = {
-    id: selectedMod.getAttribute("mod-id"),
-    icon: selectedMod.getAttribute("mod-icon"),
-    name: selectedMod.getAttribute("mod-name"),
-    desc: selectedMod.getAttribute("mod-desc"),
-    version: selectedMod.getAttribute("mod-version"),
-    author: selectedMod.getAttribute("mod-author"),
-    website: selectedMod.getAttribute("mod-website"),
-    issues: selectedMod.getAttribute("mod-issues"),
+    id: selectedMod.getAttribute("mod-id")!,
+    icon: selectedMod.getAttribute("mod-icon")!,
+    name: selectedMod.getAttribute("mod-name")!,
+    desc: selectedMod.getAttribute("mod-desc")!,
+    version: selectedMod.getAttribute("mod-version")!,
+    author: selectedMod.getAttribute("mod-author")!,
+    website: selectedMod.getAttribute("mod-website")!,
+    issues: selectedMod.getAttribute("mod-issues")!,
   }
 
   currentSelectedMod = mod.id
@@ -211,12 +208,12 @@ function openMod(selectedMod) {
     case undefined:
       console.log("no website link found")
       details.website.removeAttribute("href")
-      details.website.setAttribute("disabled", null)
+      details.website.setAttribute("disabled", "")
       break
     case "none":
       console.log("no website set")
       details.website.removeAttribute("href")
-      details.website.setAttribute("disabled", null)
+      details.website.setAttribute("disabled", "")
       break
     default:
       console.log(mod.website)
@@ -230,12 +227,12 @@ function openMod(selectedMod) {
     case undefined:
       console.log("no issues link found")
       details.issues.removeAttribute("href")
-      details.issues.setAttribute("disabled", null)
+      details.issues.setAttribute("disabled", "")
       break
     case "none":
       console.log("no issues link set")
       details.issues.removeAttribute("href")
-      details.issues.setAttribute("disabled", null)
+      details.issues.setAttribute("disabled", "")
       break
     default:
       console.log(mod.issues)
@@ -263,24 +260,27 @@ modListContainer.addEventListener("drop", (event) => {
   event.preventDefault()
   event.stopPropagation()
 
-  const paths = [...event.dataTransfer.files].map((file) => file.path)
-  window.electronAPI.installMods(paths)
+  const paths: string[] = []
+  for (const f of event.dataTransfer!.files) paths.push(f.path)
+  window.events.installMods(paths)
 })
 
-function confirmDeleteMod(modItem) {
+function confirmDeleteMod(modItem: HTMLLIElement) {
   console.log(modItem)
+  const parentNode = modItem.parentNode as HTMLUListElement
   const text =
     "Are you sure you want to uninstall " +
-    modItem.parentNode.getAttribute("mod-name") +
+    parentNode.getAttribute("mod-name") +
     "?"
   confirmDelete("Uninstall this mod?", text, modItem)
-  console.log("yeet ", modItem.parentNode.getAttribute("mod-name"))
+  console.log("yeet ", parentNode.getAttribute("mod-name"))
 }
-function deleteMod(modItem) {
-  modItem.parentNode.remove()
-  mods[modItem.parentNode.getAttribute("mod-index")] = null
+function deleteMod(modItem: HTMLLIElement) {
+  const parentNode = modItem.parentNode as HTMLUListElement
+  parentNode.remove()
+  mods[parentNode.getAttribute("mod-index") as unknown as number] = null
   console.log(mods)
-  if (currentSelectedMod === modItem.parentNode.getAttribute("mod-id")) {
+  if (currentSelectedMod === parentNode.getAttribute("mod-id")) {
     details.name.innerText = "No mod selected..."
     details.icon.src = "img/missing_image.svg"
     details.version.setAttribute("modversion", "")
@@ -288,16 +288,16 @@ function deleteMod(modItem) {
     details.desc.innerText = ""
     details.author.classList.add("hide")
     details.issues.removeAttribute("href")
-    details.issues.setAttribute("disabled", null)
+    details.issues.setAttribute("disabled", "")
     details.website.removeAttribute("href")
-    details.website.setAttribute("disabled", null)
+    details.website.setAttribute("disabled", "")
   }
 
-  console.log(modItem.parentNode.getAttribute("mod-name") + " deleted")
+  console.log(parentNode.getAttribute("mod-name") + " deleted")
   // CALL FUNCTION TO DELETE/UNINSTALL MOD
 }
 
-function openPopup(header, text, buttons) {
+function openPopup(header: string, text: string, buttons: string) {
   popup.header.innerText = header
   popup.text.innerText = text
   switch (buttons) {
@@ -332,7 +332,7 @@ function closePopup() {
   popup.btn.close.removeAttribute("hidden")
 }
 
-function confirmDelete(header, text, item) {
+function confirmDelete(header: string, text: string, item: HTMLLIElement) {
   popup.header.innerText = header
   popup.text.innerText = text
   popup.btn.ok.setAttribute("hidden", "")
@@ -344,22 +344,22 @@ function confirmDelete(header, text, item) {
   })
 }
 
-function toggleMod(modItem) {
+function toggleMod(modItem: HTMLLIElement) {
   console.log(modItem)
-  const modName = modItem.parentNode.getAttribute("mod-name")
-  switch (modItem.parentNode.getAttribute("installed")) {
+  const parentNode = modItem.parentNode as HTMLUListElement
+  const modName = parentNode.getAttribute("mod-name")!
+  switch (parentNode.getAttribute("installed")) {
     case "true":
-      modItem.parentNode.setAttribute("installed", "false")
+      parentNode.setAttribute("installed", "false")
       modItem.removeAttribute("ticked")
-      const offtext = modName + " has been disabled."
-      openPopup("Mod Disabled", offtext, "ok")
+      openPopup("Mod Disabled", modName + " has been disabled.", "ok")
       // CALL FUNCTION TO DISABLE MOD
       break
     case "false":
-      modItem.parentNode.setAttribute("installed", "true")
+      parentNode.setAttribute("installed", "true")
       modItem.setAttribute("ticked", "")
-      const ontext = modName + " has been enabled."
-      openPopup("Mod enabled", ontext, "ok")
+      openPopup("Mod enabled", modName + " has been enabled."
+      , "ok")
       // CALL FUNCTION TO ENABLE MOD
       break
   }
@@ -373,7 +373,7 @@ function launchGame() {
       "Your game is now launching and this window will close.",
       "none"
     )
-    window.electronAPI.launchGame()
+    window.events.launchGame()
   }
 }
 
@@ -383,57 +383,57 @@ function toggleInfo() {
   openPopup("", infotext, "close")
 }
 
-function checkUpdates() {
-  //CALL FUNCTION TO CHECK FOR UPDATES
-  // IF NONE ARE AVAILABLE CALL FUNCTION BELOW
-  openPopup("No updates found", "Your mods are up-to-date!", "ok")
-}
+// function checkUpdates() {
+//   // CALL FUNCTION TO CHECK FOR UPDATES
+//   // IF NONE ARE AVAILABLE CALL FUNCTION BELOW
+//   openPopup("No updates found", "Your mods are up-to-date!", "ok")
+// }
 
-function getInstalledModsAndPopulateList() {
-  const installedMods = window.installedpopulator.ILP_getInstalledMods()
+// function getInstalledModsAndPopulateList() {
+//   const installedMods = window.installedpopulator.ILP_getInstalledMods()
 
-  for (const installedModIndex in installedMods) {
-    const mod = installedMods[installedModIndex]
-    try {
-      createModItem(
-        mod["id"],
-        mod["name"],
-        mod["description"],
-        mod["version"],
-        mod["authors"].join(", "),
-        mod["contact"]["homepage"],
-        null,
-        mod["finalIconPath"],
-        true
-      )
-    } catch (e) {
-      console.warn(
-        "Mod: " + mod["id"] + " had an issue while installing: " + e.toString()
-      )
-    }
-  }
-}
-getInstalledModsAndPopulateList()
+//   for (const installedModIndex in installedMods) {
+//     const mod = installedMods[installedModIndex]
+//     try {
+//       createModItem(
+//         mod["id"],
+//         mod["name"],
+//         mod["description"],
+//         mod["version"],
+//         mod["authors"].join(", "),
+//         mod["contact"]["homepage"],
+//         null,
+//         mod["finalIconPath"],
+//         true
+//       )
+//     } catch (e) {
+//       console.warn(
+//         "Mod: " + mod["id"] + " had an issue while installing: " + e.toString()
+//       )
+//     }
+//   }
+// }
+// getInstalledModsAndPopulateList()
 
-window.electronAPI.onModAdded((_event, mod) => {
-  console.log("Added", value)
-  // createModItem(
-  //     mod["id"],
-  //     mod["name"],
-  //     mod["description"],
-  //     mod["version"],
-  //     mod["authors"].join(", "),
-  //     mod["contact"]["homepage"],
-  //     null,
-  //     mod["finalIconPath"],
-  //     true
-  // )
-})
+// window.electronAPI.onModAdded((_event, mod) => {
+//   console.log("Added", value)
+//   // createModItem(
+//   //     mod["id"],
+//   //     mod["name"],
+//   //     mod["description"],
+//   //     mod["version"],
+//   //     mod["authors"].join(", "),
+//   //     mod["contact"]["homepage"],
+//   //     null,
+//   //     mod["finalIconPath"],
+//   //     true
+//   // )
+// })
 
-window.electronAPI.onModChanged((_event, value) => {
-  console.log("Changed", value)
-})
+// window.electronAPI.onModChanged((_event, value) => {
+//   console.log("Changed", value)
+// })
 
-window.electronAPI.onModRemoved((_event, value) => {
-  console.log("Removed", value)
-})
+// window.electronAPI.onModRemoved((_event, value) => {
+//   console.log("Removed", value)
+// })

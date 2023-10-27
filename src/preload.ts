@@ -9,7 +9,7 @@ contextBridge.exposeInMainWorld("config", config)
 contextBridge.exposeInMainWorld("installedpopulator", ILP_getInstalledMods)
 contextBridge.exposeInMainWorld("events", {
   launchGame: () => ipcRenderer.send("launch-game"),
-  installMods: (paths: string) => ipcRenderer.send("install-mods", paths),
+  installMods: (paths: string[]) => ipcRenderer.send("install-mods", paths),
 
   onModAdded: (callback: () => void) => ipcRenderer.on("mod-added", callback),
   onModChanged: (callback: () => void) =>

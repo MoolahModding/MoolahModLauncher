@@ -3,6 +3,10 @@ import type { MMLConfig } from "./config"
 declare global {
   interface Window {
     config: MMLConfig
+    events: {
+      launchGame: () => void
+      installMods: (paths: string[]) => void
+    }
     // TODO: add types defined on preload.ts
   }
 
