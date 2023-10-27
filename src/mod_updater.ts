@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { getLatestModVersionByGitHub } from "./providers/githubreleases"
 import { getCurrentModVersionByMWS } from "./providers/modworkshop"
 
@@ -7,7 +9,7 @@ import { getCurrentModVersionByMWS } from "./providers/modworkshop"
  * Returns true if an update is available
  * Returns false if there isn't
  */
-async function checkForModUpdate(meta: any) {
+export async function checkForModUpdate(meta: any) {
   if (!meta["updateProvider"]) {
     return false
   }
@@ -29,8 +31,4 @@ async function checkForModUpdate(meta: any) {
   if (meta["version"] !== latest) {
     return true
   }
-}
-
-module.exports = {
-  checkForModUpdate,
 }

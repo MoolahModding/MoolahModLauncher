@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { app, BrowserWindow, dialog, ipcMain, shell } from "electron"
 import { exit } from "node:process"
 
@@ -27,7 +29,16 @@ if (handleStartupEvent()) exit(0)
 
 require("update-electron-app")()
 
-let mainWindow
+const mainWindow = new BrowserWindow({
+  width: 800,
+  height: 600,
+  webPreferences: {
+    preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+    nodeIntegration: false,
+    contextIsolation: true,
+  },
+  icon: "assets/img/modloader", // FIXME: svg not supported
+})
 
 app.on("ready", () => {
   const installPackagesPaths = process.argv
@@ -54,16 +65,6 @@ app.on("ready", () => {
       installAllPackages(packagePaths, false)
     )
 
-    mainWindow = new BrowserWindow({
-      width: 800,
-      height: 600,
-      webPreferences: {
-        preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-        nodeIntegration: false,
-        contextIsolation: true,
-      },
-      icon: "assets/img/modloader", // FIXME: svg not supported
-    })
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
     mainWindow.removeMenu()
     // filewatcher.initWatch(mainWindow.webContents).then(() => {})

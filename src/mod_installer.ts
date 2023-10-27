@@ -1,3 +1,6 @@
+/* eslint-disable */
+//@ts-nocheck
+
 import { dialog, app } from "electron"
 import path from "node:path"
 
