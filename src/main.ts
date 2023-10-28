@@ -58,7 +58,7 @@ function createWindow() {
   // filewatcher.initWatch(mainWindow.webContents).then(() => {})
 }
 
-;(() => app.enableSandbox())()
+// () => app.enableSandbox()
 
 app.on("ready", () => {
   const installPackagesPaths = process.argv
