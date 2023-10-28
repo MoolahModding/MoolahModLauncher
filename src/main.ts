@@ -29,7 +29,7 @@ if (handleStartupEvent()) exit(0)
 
 require("update-electron-app")()
 
-app.on("ready", () => {
+function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -37,10 +37,21 @@ app.on("ready", () => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: true,
     },
     icon: "assets/img/modloader.svg", // FIXME: svg not supported
   })
 
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
+  mainWindow.removeMenu()
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools()
+  // filewatcher.initWatch(mainWindow.webContents).then(() => {})
+}
+
+app.enableSandbox()
+
+app.on("ready", () => {
   const installPackagesPaths = process.argv
     .slice(1)
     .filter((v) => v !== "." && !v.startsWith("--"))
@@ -65,9 +76,7 @@ app.on("ready", () => {
       installAllPackages(packagePaths, false)
     )
 
-    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
-    mainWindow.removeMenu()
-    // filewatcher.initWatch(mainWindow.webContents).then(() => {})
+    createWindow()
   }
 })
 

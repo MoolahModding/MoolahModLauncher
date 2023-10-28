@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import fs from "node:fs"
+import { lstat, readFile, readdir } from "node:fs/promises"
 import path from "node:path"
 
 import drivelist from "drivelist"
@@ -46,7 +46,7 @@ function locateSteamInstall() {
   })
 }
 
-async function locateMsStoreInstall() {
+async function locateMsStoreInstall(): Promise<string> {
   const drives = await drivelist.list()
   const mountPaths = drives
     .filter((drive) => drive.isSystem)
@@ -54,36 +54,41 @@ async function locateMsStoreInstall() {
     .map((mountPoint) => mountPoint.path)
   for (const mountPath of new Set(mountPaths)) {
     const installPath = path.join(mountPath, "/XboxGames/Payday 3/Content")
-    if (fs.existsSync(installPath)) return installPath
+    try {
+      await lstat(installPath)
+      return installPath
+    } catch {
+      continue
+    }
   }
 
   throw new Error("NOT_FOUND")
 }
 
-function locateEpicInstall() {
-  return new Promise((resolve, reject) => {
-    const epicManifestPath =
-      "C:/ProgramData/Epic/EpicGamesLauncher/Data/Manifests"
-    if (!fs.existsSync(epicManifestPath)) reject("NOTFOUND")
+async function locateEpicInstall(): Promise<string> {
+  const epicManifestPath =
+    "C:/ProgramData/Epic/EpicGamesLauncher/Data/Manifests"
+  try {
+    await lstat(epicManifestPath)
+  } catch (err) {
+    throw err
+  }
 
-    const manifests = fs.readdirSync(epicManifestPath)
+  const manifests = await readdir(epicManifestPath)
 
-    for (const manifest of manifests) {
-      if (!manifest.endsWith(".item")) continue
+  // TODO: change "PAYDAY 3" to whatever the game uses to identify itself
+  for (const mf of manifests) {
+    if (!mf.endsWith(".item")) continue
 
-      const manifestJson = JSON.parse(
-        fs.readFileSync(path.join(epicManifestPath, manifest)).toString()
-      )
-
-      // TODO: change "PAYDAY 3" to whatever the game uses to identify itself
-      if (manifestJson["DisplayName"] === "PAYDAY 3") {
-        resolve(manifestJson["InstallLocation"])
-        return
-      }
+    const manifestJson = JSON.parse(
+      await readFile(path.join(epicManifestPath, mf)).toString()
+    )
+    if (manifestJson["DisplayName"] === "PAYDAY 3") {
+      return manifestJson["InstallLocation"]
     }
+  }
 
-    reject("NOTFOUND")
-  })
+  throw new Error("NOT_FOUND")
 }
 
 export function resolveInstall() {

@@ -10,7 +10,7 @@ const launcherConfig = {
 const mods: Array<HTMLLIElement | null> = []
 let currentSelectedMod: string
 
-const config = window.config
+const config = window.moolah.config
 
 window.onload = (e) => {
   loadSettings()
@@ -108,8 +108,8 @@ function saveSettings() {
   // Should always load the config before reading from it and save after writing, because
   // nodejs and normal javascript have different instances of the config
   const keepOpen = document.getElementById("setKeepOpen") as HTMLInputElement
-  config.setConfigValue("gameDirectory", "test") //document.getElementById("setGameDir").value);
-  config.setConfigValue("keepLauncherOpen", keepOpen.checked)
+  void config.setConfigValue("gameDirectory", "test") //document.getElementById("setGameDir").value);
+  void config.setConfigValue("keepLauncherOpen", keepOpen.checked)
 }
 
 function toggleSettingsPanel() {
@@ -259,7 +259,7 @@ modListContainer.addEventListener("drop", (event) => {
 
   const paths: string[] = []
   for (const f of event.dataTransfer!.files) paths.push(f.path)
-  window.events.installMods(paths)
+  window.moolah.events.installMods(paths)
 })
 
 function confirmDeleteMod(modItem: HTMLLIElement) {
@@ -369,7 +369,7 @@ function launchGame() {
       "Your game is now launching and this window will close.",
       "none"
     )
-    window.events.launchGame()
+    window.moolah.events.launchGame()
   }
 }
 

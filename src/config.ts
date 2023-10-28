@@ -1,4 +1,4 @@
-import { existsSync, writeFileSync, readFileSync } from "node:fs"
+import { writeFile, readFile, lstat } from "node:fs/promises"
 import path from "node:path"
 import { exit } from "node:process"
 
@@ -22,11 +22,14 @@ class ConfigInternal {
     this.configPath = configPath
   }
 
-  public setConfigValue<T extends ConfigKey>(name: T, newValue: ConfigType[T]) {
+  public async setConfigValue<T extends ConfigKey>(
+    name: T,
+    newValue: ConfigType[T]
+  ) {
     const oldValue = this.config[name]
     this.config[name] = newValue
     try {
-      this.save()
+      await this.save()
     } catch (err) {
       console.error(err)
       this.config[name] = oldValue
@@ -37,37 +40,41 @@ class ConfigInternal {
     return this.config[name]
   }
 
-  private save() {
-    writeFileSync(this.configPath, JSON.stringify(this.config, null, 2))
+  private async save() {
+    await writeFile(this.configPath, JSON.stringify(this.config, null, 2))
   }
 
-  public static load(configPath?: string): ConfigInternal {
+  public static async load(configPath?: string): Promise<ConfigInternal> {
     const confPath = configPath ?? defaultConfigPath
-    if (existsSync(confPath)) {
+    try {
+      const configFile = await readFile(confPath)
+      return new ConfigInternal(
+        JSON.parse(configFile.toString()) as ConfigType,
+        confPath
+      ) // TODO: safe parse JSON
+    } catch {
       try {
-        const configFile = readFileSync(confPath)
-        return new ConfigInternal(
-          JSON.parse(configFile.toString()) as ConfigType,
-          confPath
-        ) // TODO: safe parse JSON
+        await writeFile(confPath, JSON.stringify(defaultConfig, null, 2))
+        return new ConfigInternal(defaultConfig, confPath)
       } catch (err) {
         console.error(err)
         exit(1)
       }
-    } else {
-      writeFileSync(confPath, JSON.stringify(defaultConfig, null, 2))
-      return new ConfigInternal(defaultConfig, confPath)
     }
   }
 }
 
-export const config = ConfigInternal.load()
+export const config = await ConfigInternal.load()
 
 const gameDir = config.getConfigValue("gameDirectory")
-const binaryType = isWinGDK() ? "WinGDK" : "Win64"
+const binaryType = (await isWinGDK()) ? "WinGDK" : "Win64"
 
-function isWinGDK(): boolean {
-  return existsSync(path.join(gameDir, "appxmanifest.xml"))
+async function isWinGDK(): Promise<boolean> {
+  try {
+    return (await lstat(path.join(gameDir, "appxmanifest.xml"))).isFile()
+  } catch {
+    return false
+  }
 }
 
 export function getModsDirectory(): string {
