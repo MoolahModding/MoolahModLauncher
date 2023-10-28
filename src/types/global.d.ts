@@ -1,9 +1,15 @@
-import type { MMLConfig } from "./config"
+import type { MMLConfigType, MMLConfigKeyType } from "./config"
 
 declare global {
   interface Window {
     moolah: {
-      config: MMLConfig
+      config: {
+        setConfigValue: <T extends MMLConfigKeyType>(
+          key: T,
+          value: MMLConfigType[T]
+        ) => Promise<void>
+        getConfigValue: <T extends MMLConfigKeyType>(key: T) => MMLConfigType[T]
+      }
       events: {
         launchGame: () => void
         installMods: (paths: string[]) => void

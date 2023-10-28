@@ -2,29 +2,27 @@ import { writeFile, readFile, lstat } from "node:fs/promises"
 import path from "node:path"
 import { exit } from "node:process"
 
-import type { ConfigType } from "./types/config"
-
-type ConfigKey = keyof ConfigType
+import type { MMLConfigType, MMLConfigKeyType } from "./types/config"
 
 const defaultConfig = {
   keepLauncherOpen: false,
   gameDirectory: "",
-} as const satisfies ConfigType
+} as const satisfies MMLConfigType
 
 const defaultConfigPath = "./config.json" as const
 
 class ConfigInternal {
-  private config: ConfigType
+  private config: MMLConfigType
   private configPath: string
 
-  constructor(config: ConfigType, configPath: string) {
+  constructor(config: MMLConfigType, configPath: string) {
     this.config = config
     this.configPath = configPath
   }
 
-  public async setConfigValue<T extends ConfigKey>(
+  public async setConfigValue<T extends MMLConfigKeyType>(
     name: T,
-    newValue: ConfigType[T]
+    newValue: MMLConfigType[T]
   ) {
     const oldValue = this.config[name]
     this.config[name] = newValue
@@ -36,7 +34,7 @@ class ConfigInternal {
     }
   }
 
-  public getConfigValue<T extends ConfigKey>(name: T): ConfigType[T] {
+  public getConfigValue<T extends MMLConfigKeyType>(name: T): MMLConfigType[T] {
     return this.config[name]
   }
 
@@ -49,7 +47,7 @@ class ConfigInternal {
     try {
       const configFile = await readFile(confPath)
       return new ConfigInternal(
-        JSON.parse(configFile.toString()) as ConfigType,
+        JSON.parse(configFile.toString()) as MMLConfigType,
         confPath
       ) // TODO: safe parse JSON
     } catch {

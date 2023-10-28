@@ -1,8 +1,6 @@
-import type { config } from "../config"
-
-export interface ConfigType {
+export interface MMLConfigType {
   keepLauncherOpen: boolean
   gameDirectory: string
 }
 
-export type MMLConfig = typeof config
+export type MMLConfigKeyType = keyof MMLConfigType

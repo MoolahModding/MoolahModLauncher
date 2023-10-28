@@ -1,6 +1,14 @@
 /* eslint-disable */
 
-import { app, BrowserWindow, dialog, ipcMain, shell } from "electron"
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  IpcMainEvent,
+  IpcMainInvokeEvent,
+  shell,
+} from "electron"
 import { exit } from "node:process"
 
 // import filewatcher from './filewatcher'
@@ -8,6 +16,7 @@ import { config } from "./config"
 import { resolveInstall } from "./installlocators"
 import { installAllPackages } from "./mod_installer"
 import { installShellExtension, uninstallShellExtension } from "./setup_win32"
+import { MMLConfigKeyType, MMLConfigType } from "./types/config"
 
 // TODO: refactor
 
@@ -49,7 +58,7 @@ function createWindow() {
   // filewatcher.initWatch(mainWindow.webContents).then(() => {})
 }
 
-app.enableSandbox()
+;(() => app.enableSandbox())()
 
 app.on("ready", () => {
   const installPackagesPaths = process.argv
@@ -74,6 +83,22 @@ app.on("ready", () => {
     ipcMain.on("launch-game", handleLaunchGame)
     ipcMain.on("install-mods", (event, packagePaths) =>
       installAllPackages(packagePaths, false)
+    )
+    ipcMain.on(
+      "set-config-value",
+      async <T extends MMLConfigKeyType>(
+        _: IpcMainEvent,
+        key: T,
+        value: MMLConfigType[T]
+      ) => {
+        await config.setConfigValue(key, value)
+      }
+    )
+    ipcMain.handle(
+      "get-config-value",
+      <T extends MMLConfigKeyType>(_: IpcMainInvokeEvent, key: T) => {
+        return config.getConfigValue(key)
+      }
     )
 
     createWindow()
@@ -102,7 +127,4 @@ function handleLaunchGame() {
         )
       }
     )
-}
-function getConfigValue(arg0: string) {
-  throw new Error("Function not implemented.")
 }

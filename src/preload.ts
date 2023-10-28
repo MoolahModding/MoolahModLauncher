@@ -1,14 +1,22 @@
 import { contextBridge, ipcRenderer } from "electron"
 
-import { config } from "./config"
-import { ILP_getInstalledMods } from "./installedlistpopulator"
+import type { MMLConfigKeyType, MMLConfigType } from "./types/config"
+
+// import { ILP_getInstalledMods } from "./installedlistpopulator"
 
 // TODO: refactor
 // TODO: fix not exposing keys (use ipc instead)
 
-contextBridge.exposeInMainWorld("installedpopulator", ILP_getInstalledMods)
+// contextBridge.exposeInMainWorld("installedpopulator", ILP_getInstalledMods)
 contextBridge.exposeInMainWorld("moolah", {
-  config: config,
+  config: {
+    setConfigValue: <T extends MMLConfigKeyType>(
+      key: T,
+      value: MMLConfigType[T]
+    ) => ipcRenderer.send("set-config-value", key, value),
+    getConfigValue: <T extends MMLConfigKeyType>(key: T) =>
+      ipcRenderer.invoke("get-config-value", key),
+  },
   events: {
     launchGame: () => ipcRenderer.send("launch-game"),
     installMods: (paths: string[]) => ipcRenderer.send("install-mods", paths),
