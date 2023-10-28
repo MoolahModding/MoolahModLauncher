@@ -3,7 +3,7 @@
 import { lstat, readFile, readdir } from "node:fs/promises"
 import path from "node:path"
 
-import drivelist from "drivelist"
+import { list } from "drivelist"
 import regedit from "winreg"
 
 // TODO: refactor
@@ -47,7 +47,7 @@ function locateSteamInstall() {
 }
 
 async function locateMsStoreInstall(): Promise<string> {
-  const drives = await drivelist.list()
+  const drives = await list()
   const mountPaths = drives
     .filter((drive) => drive.isSystem)
     .flatMap((drive) => drive.mountpoints)

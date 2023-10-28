@@ -5,7 +5,6 @@ import type { MMLConfigKeyType, MMLConfigType } from "./types/config"
 // import { ILP_getInstalledMods } from "./installedlistpopulator"
 
 // TODO: refactor
-// TODO: fix not exposing keys (use ipc instead)
 
 // contextBridge.exposeInMainWorld("installedpopulator", ILP_getInstalledMods)
 contextBridge.exposeInMainWorld("moolah", {

@@ -6,7 +6,7 @@ import { rendererRules } from "./webpack.rules"
 const rendererConfig: Configuration = {
   // XXX: should add `optimization` key for production?
   // XXX: should add `cache` key for developing?
-  devtool: "inline-source-map",
+  // devtool: "inline-source-map",
   module: {
     rules: rendererRules,
   },

@@ -1,5 +1,7 @@
 import "./style.css"
 
+// ? Handlers in index.heml is not working correctly (it might be an effect of webpack?)
+
 const launcherConfig = {
   launcherVersion: "1.0", // TODO: should come from package.json
   gameLaunchPossible: true, // TODO: unimplemented

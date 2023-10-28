@@ -60,6 +60,34 @@ function createWindow() {
 
 // () => app.enableSandbox()
 
+function init() {
+  ipcMain.on("launch-game", handleLaunchGame)
+  ipcMain.on("install-mods", (event, packagePaths) =>
+    installAllPackages(packagePaths, false)
+  )
+  ipcMain.on(
+    "set-config-value",
+    async <T extends MMLConfigKeyType>(
+      _: IpcMainEvent,
+      key: T,
+      value: MMLConfigType[T]
+    ) => {
+      await config.setConfigValue(key, value)
+    }
+  )
+  ipcMain.handle(
+    "get-config-value",
+    <T extends MMLConfigKeyType>(_: IpcMainInvokeEvent, key: T) => {
+      return config.getConfigValue(key)
+    }
+  )
+  createWindow()
+}
+
+app.whenReady().then(() => {
+  init()
+})
+
 app.on("ready", () => {
   const installPackagesPaths = process.argv
     .slice(1)
@@ -79,29 +107,6 @@ app.on("ready", () => {
 
   if (installPackagesPaths.length > 0) {
     installAllPackages(installPackagesPaths, true)
-  } else {
-    ipcMain.on("launch-game", handleLaunchGame)
-    ipcMain.on("install-mods", (event, packagePaths) =>
-      installAllPackages(packagePaths, false)
-    )
-    ipcMain.on(
-      "set-config-value",
-      async <T extends MMLConfigKeyType>(
-        _: IpcMainEvent,
-        key: T,
-        value: MMLConfigType[T]
-      ) => {
-        await config.setConfigValue(key, value)
-      }
-    )
-    ipcMain.handle(
-      "get-config-value",
-      <T extends MMLConfigKeyType>(_: IpcMainInvokeEvent, key: T) => {
-        return config.getConfigValue(key)
-      }
-    )
-
-    createWindow()
   }
 })
 
